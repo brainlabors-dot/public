@@ -561,7 +561,7 @@
 
 <!-- ======================== VULNERABILITY FILTER ======================== -->
 <div class="section" id="vulnerabilities">
-  <h2 class="section-title"><span class="icon">📋</span> All 30 Vulnerabilities</h2>
+  <h2 class="section-title"><span class="icon">📋</span> All 35+ Vulnerabilities</h2>
   <p class="section-subtitle">Click any card to expand. Filter by difficulty level.</p>
 
   <div class="filter-bar">
@@ -2590,6 +2590,294 @@
 
   </div><!-- end vuln-grid -->
 </div><!-- end vulnerabilities section -->
+
+<!-- ======================== CLOUD VULNERABILITIES ======================== -->
+<div class="section" id="cloud-vulns">
+  <h2 class="section-title"><span class="icon">☁️</span> Cloud Vulnerabilities</h2>
+  <p class="section-subtitle">Most websites run on cloud servers (AWS, GCP, Azure). When companies misconfigure cloud settings, attackers can steal credentials, access databases, and take over entire infrastructures. Cloud bugs pay $2,000–$20,000+.</p>
+
+  <div class="vuln-grid">
+
+    <!-- CLOUD 1: Open S3 Buckets -->
+    <div class="vuln-card vuln-card-advanced" data-difficulty="advanced">
+      <div class="vuln-card-header" onclick="toggleVuln(this)">
+        <div class="vuln-card-title">
+          <span class="vuln-icon">🪣</span>
+          <h3>Open S3 Buckets</h3>
+          <div class="subtitle">Exposed cloud storage containing sensitive data</div>
+        </div>
+        <span class="difficulty-badge advanced">Advanced</span>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="vuln-card-body">
+        <div class="vuln-detail">
+          <h4>🧠 What is it?</h4>
+          <p>Amazon S3 is a cloud storage service — like a hard drive on the internet. Companies store backups, customer data, source code, and API keys there. When bucket permissions are set wrong, <strong>anyone on the internet can read (or write to) the files</strong>. It's one of the most common and impactful cloud misconfigurations.</p>
+        </div>
+        <div class="vuln-detail">
+          <h4>📝 Analogy</h4>
+          <p>A company puts sensitive files in a cloud storage box but sets the permission to "anyone with the link can view." An attacker finds the link and downloads everything — customer records, passwords, source code.</p>
+        </div>
+        <div class="vuln-detail">
+          <h4>🎯 Where to look</h4>
+          <ul>
+            <li><strong>JavaScript files</strong> — open DevTools (F12), search source for "s3.amazonaws.com" or "s3://"</li>
+            <li><strong>Google dork:</strong> <code>site:s3.amazonaws.com "company-name"</code></li>
+            <li><strong>GitHub repos</strong> — search for S3 URLs in public code</li>
+            <li><strong>Mobile apps</strong> — intercept API calls, look for S3 URLs</li>
+            <li><strong>Common bucket names:</strong> company-backups, company-assets, company-staging, company-dev</li>
+          </ul>
+        </div>
+        <div class="vuln-detail">
+          <h4>🔬 How to test</h4>
+          <div class="steps">
+            <div class="step"><span class="step-num">1</span><div class="step-content">Find an S3 URL in JavaScript source or Google dorks: <code>https://BUCKETNAME.s3.amazonaws.com</code></div></div>
+            <div class="step"><span class="step-num">2</span><div class="step-content">Visit the URL — if you see an XML file listing files, the bucket is open!</div></div>
+            <div class="step"><span class="step-num">3</span><div class="step-content">Try downloading files: <code>aws s3 ls s3://BUCKET-NAME --no-sign-request</code></div></div>
+            <div class="step"><span class="step-num">4</span><div class="step-content">If you can list and download files → report it. If you can UPLOAD files → Critical severity!</div></div>
+          </div>
+        </div>
+        <div class="vuln-detail">
+          <h4>💉 What to try</h4>
+          <div class="code-block">
+            <pre><code>-- Common bucket patterns
+https://company-name.s3.amazonaws.com
+https://company-backups.s3.amazonaws.com
+https://company-staging.s3.amazonaws.com
+
+-- List bucket contents (if open)
+aws s3 ls s3://BUCKET-NAME --no-sign-request
+
+-- Download files
+aws s3 cp s3://BUCKET-NAME/secret-file.txt . --no-sign-request
+
+-- Test write access (CRITICAL if it works!)
+echo "test" > test.txt
+aws s3 cp test.txt s3://BUCKET-NAME/test.txt --no-sign-request</code></pre>
+          </div>
+        </div>
+        <div class="vuln-detail">
+          <strong>📝 Report Tip:</strong> List the sensitive files you found. Mention the data type (customer PII, source code, credentials). If write access is possible, escalate severity — this could allow website defacement or malware injection.
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOUD 2: Cloud Metadata Exploitation -->
+    <div class="vuln-card vuln-card-advanced" data-difficulty="advanced">
+      <div class="vuln-card-header" onclick="toggleVuln(this)">
+        <div class="vuln-card-title">
+          <span class="vuln-icon">📡</span>
+          <h3>Cloud Metadata Exploitation</h3>
+          <div class="subtitle">Steal server credentials via the metadata service</div>
+        </div>
+        <span class="difficulty-badge advanced">Advanced</span>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="vuln-card-body">
+        <div class="vuln-detail">
+          <h4>🧠 What is it?</h4>
+          <p>Cloud servers have a special internal URL (<span class="highlight">169.254.169.254</span>) that returns info about the server — including <strong>temporary security credentials</strong> (access keys, tokens). If you find an SSRF vulnerability, you can make the server request this URL and steal its cloud credentials. Those credentials can access everything the server has access to.</p>
+        </div>
+        <div class="vuln-detail">
+          <h4>📝 Analogy</h4>
+          <p>Every cloud server has a "server ID card" on its desk. The ID card gives access to the cloud account. Trick the server into showing you its ID card (via SSRF) and you get its access keys — letting you impersonate the server.</p>
+        </div>
+        <div class="vuln-detail">
+          <h4>🎯 Where to look</h4>
+          <ul>
+            <li><strong>Any SSRF vulnerability</strong> — this is the escalation path for SSRF</li>
+            <li><strong>"Import from URL" features</strong>, image loaders, PDF generators</li>
+            <li><strong>Targets on AWS/GCP/Azure</strong> — check with wappalyzer or DNS records</li>
+            <li><strong>CNAME records</strong> pointing to cloud providers: <code>dig target.com</code></li>
+          </ul>
+        </div>
+        <div class="vuln-detail">
+          <h4>🔬 How to test</h4>
+          <div class="steps">
+            <div class="step"><span class="step-num">1</span><div class="step-content">Find an SSRF vulnerability first (see SSRF section above)</div></div>
+            <div class="step"><span class="step-num">2</span><div class="step-content">Set up a listener: go to <code>webhook.site</code> (free)</div></div>
+            <div class="step"><span class="step-num">3</span><div class="step-content">Try accessing the metadata URL via SSRF: <code>http://169.254.169.254/latest/meta-data/</code></div></div>
+            <div class="step"><span class="step-num">4</span><div class="step-content">If you get a response, explore: <code>/iam/security-credentials/</code> to find role names</div></div>
+            <div class="step"><span class="step-num">5</span><div class="step-content">The role's temporary credentials give you cloud access — report immediately!</div></div>
+          </div>
+        </div>
+        <div class="vuln-detail">
+          <h4>💉 Metadata URLs</h4>
+          <div class="code-block">
+            <pre><code>-- AWS Metadata (IMDSv1)
+http://169.254.169.254/latest/meta-data/
+http://169.254.169.254/latest/meta-data/iam/security-credentials/
+http://169.254.169.254/latest/user-data/
+
+-- GCP Metadata
+http://metadata.google.internal/computeMetadata/v1/
+http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token
+
+-- Azure Metadata
+http://169.254.169.254/metadata/instance?api-version=2021-02-01
+
+-- Combine with SSRF:
+https://target.com/fetch?url=http://169.254.169.254/latest/meta-data/</code></pre>
+          </div>
+        </div>
+        <div class="vuln-detail">
+          <strong>📝 Report Tip:</strong> Show that you reached the metadata endpoint. DO NOT use the stolen credentials. Explain the blast radius — what services could be accessed. This is typically Critical severity.
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOUD 3: Exposed API Keys -->
+    <div class="vuln-card vuln-card-intermediate" data-difficulty="intermediate">
+      <div class="vuln-card-header" onclick="toggleVuln(this)">
+        <div class="vuln-card-title">
+          <span class="vuln-icon">🔑</span>
+          <h3>Exposed API Keys and Credentials</h3>
+          <div class="subtitle">Leaked cloud keys in source code and config files</div>
+        </div>
+        <span class="difficulty-badge intermediate">Intermediate</span>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="vuln-card-body">
+        <div class="vuln-detail">
+          <h4>🧠 What is it?</h4>
+          <p>Developers sometimes hardcode API keys, database passwords, and cloud credentials into source code, JavaScript files, or config files. If these end up in public repos or client-side code, attackers can use them to access cloud services, databases, and internal systems.</p>
+        </div>
+        <div class="vuln-detail">
+          <h4>🎯 Where to look</h4>
+          <ul>
+            <li><strong>JavaScript source code</strong> — view page source, search for keys</li>
+            <li><strong>Public GitHub repos</strong> — search for key prefixes</li>
+            <li><strong>Environment files</strong> — /.env, /config.js, /settings.json</li>
+            <li><strong>Mobile app binaries</strong> — decompile and search for strings</li>
+            <li><strong>Paste sites</strong> — developers sometimes paste keys by accident</li>
+          </ul>
+        </div>
+        <div class="vuln-detail">
+          <h4>💉 Key prefixes to search for</h4>
+          <div class="code-block">
+            <pre><code>-- AWS Keys (search GitHub for "AKIA")
+AKIA[0-9A-Z]{16}
+
+-- GCP Keys
+AIza[0-9A-Za-z_-]{35}
+
+-- Azure Connection Strings
+DefaultEndpointsProtocol=https;AccountName=...
+
+-- Private Keys
+-----BEGIN RSA PRIVATE KEY-----
+-----BEGIN OPENSSH PRIVATE KEY-----
+
+-- GitHub PAT
+ghp_[A-Za-z0-9]{36}
+
+-- Slack token
+xox[baprs]-[A-Za-z0-9-]+</code></pre>
+          </div>
+        </div>
+        <div class="vuln-detail">
+          <strong>📝 Report Tip:</strong> NEVER use the leaked key. Document where you found it and what it could access. Redact the actual key value. Explain the potential impact if an attacker used it.
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOUD 4: Subdomain Takeover -->
+    <div class="vuln-card vuln-card-intermediate" data-difficulty="intermediate">
+      <div class="vuln-card-header" onclick="toggleVuln(this)">
+        <div class="vuln-card-title">
+          <span class="vuln-icon">🌐</span>
+          <h3>Cloud Subdomain Takeover</h3>
+          <div class="subtitle">Claim abandoned cloud resources pointed to by subdomains</div>
+        </div>
+        <span class="difficulty-badge intermediate">Intermediate</span>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="vuln-card-body">
+        <div class="vuln-detail">
+          <h4>🧠 What is it?</h4>
+          <p>A company sets up a subdomain (like <code>app.company.com</code>) and points it to a cloud service (Heroku, Azure, S3). Later, they delete the cloud resource but forget to remove the DNS record. Now anyone can claim that resource and serve their own content on the company's subdomain.</p>
+        </div>
+        <div class="vuln-detail">
+          <h4>🔬 How to test</h4>
+          <div class="steps">
+            <div class="step"><span class="step-num">1</span><div class="step-content">Enumerate subdomains: use <code>crt.sh</code>, <code>subfinder</code>, or <code>amass</code></div></div>
+            <div class="step"><span class="step-num">2</span><div class="step-content">Check CNAME records: <code>dig app.company.com CNAME</code></div></div>
+            <div class="step"><span class="step-num">3</span><div class="step-content">If CNAME points to a cloud service, visit the subdomain</div></div>
+            <div class="step"><span class="step-num">4</span><div class="step-content">Look for "No such app" or "No Such Host" errors — resource might be unclaimed</div></div>
+            <div class="step"><span class="step-num">5</span><div class="step-content">Use <code>subjack</code> or <code>can-i-take-over-xyz</code> to verify</div></div>
+          </div>
+        </div>
+        <div class="vuln-detail">
+          <h4>💉 Vulnerable services</h4>
+          <div class="code-block">
+            <pre><code>*.amazonaws.com  → S3 bucket or CloudFront
+*.herokuapp.com  → Heroku app
+*.azurewebsites.net  → Azure app
+*.cloudfront.net  → CloudFront distribution
+*.github.io  → GitHub Pages
+*.surge.sh  → Surge hosting
+
+-- Tool: subjack
+subjack -w subdomains.txt -t 100 -timeout 30 -o results.txt</code></pre>
+          </div>
+        </div>
+        <div class="vuln-detail">
+          <strong>📝 Report Tip:</strong> Show the CNAME record pointing to the unclaimed resource. Explain that an attacker could serve phishing pages on the company's subdomain.
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOUD 5: Lambda / Serverless -->
+    <div class="vuln-card vuln-card-advanced" data-difficulty="advanced">
+      <div class="vuln-card-header" onclick="toggleVuln(this)">
+        <div class="vuln-card-title">
+          <span class="vuln-icon">⚡</span>
+          <h3>Lambda / Serverless Vulnerabilities</h3>
+          <div class="subtitle">Exposed env vars, overprivileged roles, injection in functions</div>
+        </div>
+        <span class="difficulty-badge advanced">Advanced</span>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="vuln-card-body">
+        <div class="vuln-detail">
+          <h4>🧠 What is it?</h4>
+          <p>Many modern apps use serverless functions (AWS Lambda, Azure Functions) instead of full servers. These functions store secrets in environment variables, have overprivileged IAM roles, or are accessible via public URLs without authentication.</p>
+        </div>
+        <div class="vuln-detail">
+          <h4>🎯 Where to look</h4>
+          <ul>
+            <li><strong>Function URLs</strong> — <code>https://abc123.execute-api.us-east-1.amazonaws.com/prod/</code></li>
+            <li><strong>API Gateway endpoints</strong> — test for injection, auth bypass, IDOR</li>
+            <li><strong>Environment variables</strong> — if you get code execution, dump <code>os.environ</code></li>
+            <li><strong>IAM roles</strong> — check what the function can access</li>
+          </ul>
+        </div>
+        <div class="vuln-detail">
+          <h4>💉 Things to check</h4>
+          <div class="code-block">
+            <pre><code>-- If you get code execution in a Lambda:
+import os
+print(os.environ)  # Dump all env vars
+
+-- Check IAM role:
+import boto3
+sts = boto3.client('sts')
+print(sts.get_caller_identity())
+
+-- Test function URLs for:
+-- SQL injection, command injection, IDOR
+-- Missing authentication
+-- Path traversal</code></pre>
+          </div>
+        </div>
+        <div class="vuln-detail">
+          <strong>📝 Report Tip:</strong> Document the exposed function URL, the env vars you found (redact values), and the IAM role permissions. Explain the blast radius. Typically Critical severity.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <!-- ======================== YOUR FIRST PROGRAM ======================== -->
 <div class="section" id="first-program">
